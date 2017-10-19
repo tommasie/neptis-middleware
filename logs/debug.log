@@ -1,0 +1,296 @@
+11/10/2017 17:51:07 - info: Server starting up
+11/10/2017 17:51:07 - info: Server running at http://neptistest.asuscomm.com:9070/
+11/10/2017 17:51:07 - warn: The data provider is down
+11/10/2017 17:51:11 - info: Server shutting down
+11/10/2017 17:52:16 - info: Server starting up
+11/10/2017 17:52:16 - info: Server running at http://localhost:9070/
+11/10/2017 17:52:16 - warn: The data provider is down
+11/10/2017 19:47:57 - info: Server shutting down
+11/10/2017 19:57:04 - info: Server starting up
+11/10/2017 19:57:04 - info: Server running at http://localhost:9070/
+11/10/2017 19:57:04 - warn: The data provider is down
+11/10/2017 20:04:18 - info: Server shutting down
+11/10/2017 20:04:23 - info: Server starting up
+11/10/2017 20:04:23 - info: Server running at http://localhost:9070/
+11/10/2017 20:04:23 - warn: The data provider is down
+11/10/2017 20:19:44 - info: Server shutting down
+11/10/2017 20:19:46 - info: Server starting up
+11/10/2017 20:19:46 - info: Server running at http://localhost:9070/
+11/10/2017 20:19:46 - warn: The data provider is down
+11/10/2017 21:30:12 - info: Server shutting down
+11/10/2017 21:30:13 - info: Server starting up
+11/10/2017 21:30:13 - info: Server running at http://localhost:9070/
+11/10/2017 21:30:13 - warn: The data provider is down
+11/10/2017 21:32:05 - info: Server shutting down
+12/10/2017 08:47:10 - info: Server starting up
+12/10/2017 08:47:10 - info: Server running at http://localhost:9070/
+12/10/2017 08:47:10 - warn: The data provider is down
+12/10/2017 10:37:30 - info: Server starting up
+12/10/2017 10:37:30 - info: Server running at http://localhost:9070/
+12/10/2017 10:37:30 - warn: The data provider is down
+12/10/2017 10:41:16 - info: [/cities] GET ::1
+12/10/2017 10:41:16 - info: [/cities] id city:  1
+12/10/2017 10:41:16 - info: [/museums] GET ::1
+12/10/2017 10:41:16 - info: [/museums] Request statusCode: 404
+12/10/2017 10:41:16 - info: [/museums] /get_museum fallita!: 
+12/10/2017 10:41:16 - info: [/museums] Request statusCode: 500
+12/10/2017 10:41:16 - info: [/museums] /get_attractionC failed!: 
+12/10/2017 10:41:25 - info: [/cities] GET ::1
+12/10/2017 10:41:25 - info: [/cities] id city:  1
+12/10/2017 10:41:25 - info: [/museums] GET ::1
+12/10/2017 10:41:25 - info: [/museums] Request statusCode: 500
+12/10/2017 10:41:25 - info: [/museums] /get_attractionC failed!: 
+12/10/2017 10:41:25 - info: [/museums] Request statusCode: 404
+12/10/2017 10:41:25 - info: [/museums] /get_museum fallita!: 
+12/10/2017 10:55:01 - info: Server starting up
+12/10/2017 10:55:01 - info: Server running at http://localhost:9070/
+12/10/2017 10:55:01 - warn: The data provider is down
+12/10/2017 10:56:56 - info: Server starting up
+12/10/2017 10:56:56 - info: Server running at http://localhost:9070/
+12/10/2017 10:56:56 - warn: The data provider is down
+12/10/2017 10:57:50 - info: [/cities] GET ::1
+12/10/2017 10:57:50 - info: [/museums] GET ::1
+12/10/2017 10:57:50 - info: [/museums] Request statusCode: 404
+12/10/2017 10:57:50 - info: [/museums] /get_museum fallita!: 
+12/10/2017 10:58:10 - info: [/cities] GET ::1
+12/10/2017 10:58:10 - info: [/museums] GET ::1
+12/10/2017 10:58:10 - info: [/museums] Request statusCode: 404
+12/10/2017 10:58:10 - info: [/museums] /get_museum fallita!: 
+12/10/2017 10:58:16 - info: [/museums] GET ::1
+12/10/2017 10:58:16 - info: [/cities] GET ::1
+12/10/2017 10:58:16 - info: [/cities] Request statusCode: 404
+12/10/2017 10:58:16 - info: [/cities] /get_museum fallita!: 
+12/10/2017 11:16:29 - info: [/museums] GET ::1
+12/10/2017 11:16:29 - info: [/museums] Request statusCode: 404
+12/10/2017 11:16:29 - info: [/museums] /get_museum fallita!: 
+12/10/2017 11:17:31 - info: [/museums] GET ::1
+12/10/2017 11:17:31 - info: [/museums] Request statusCode: 404
+12/10/2017 11:17:31 - info: [/museums] /get_museum fallita!: 
+12/10/2017 11:17:32 - info: [/museums] GET ::1
+12/10/2017 11:17:32 - info: [/museums] Request statusCode: 404
+12/10/2017 11:17:32 - info: [/museums] /get_museum fallita!: 
+12/10/2017 11:17:35 - info: [/museums] GET ::1
+12/10/2017 11:17:35 - info: [/museums] Request statusCode: 404
+12/10/2017 11:17:35 - info: [/museums] /get_museum fallita!: 
+12/10/2017 11:17:38 - info: [/museums] GET ::1
+12/10/2017 11:17:38 - info: [/museums] Request statusCode: 404
+12/10/2017 11:17:38 - info: [/museums] /get_museum fallita!: 
+12/10/2017 11:19:49 - info: Server starting up
+12/10/2017 11:19:49 - info: Server running at http://localhost:9070/
+12/10/2017 11:19:49 - warn: The data provider is down
+12/10/2017 11:19:53 - info: [/museums] GET ::1
+12/10/2017 11:19:53 - info: [/museums] Request statusCode: 404
+12/10/2017 11:19:53 - info: [/museums] /get_museum fallita!: 
+12/10/2017 11:21:14 - info: [/attractionc] GET ::1
+12/10/2017 11:21:14 - info: [/museums] GET ::1
+12/10/2017 11:21:14 - info: [/museums] Request statusCode: 404
+12/10/2017 11:21:14 - info: [/museums] /get_museum fallita!: 
+12/10/2017 11:30:10 - info: Server starting up
+12/10/2017 11:30:10 - info: Server running at http://localhost:9070/
+12/10/2017 11:30:10 - warn: The data provider is down
+12/10/2017 11:31:23 - info: Server starting up
+12/10/2017 11:31:23 - info: Server running at http://localhost:9070/
+12/10/2017 11:31:23 - warn: The data provider is down
+12/10/2017 11:32:08 - info: [/attractionc] GET ::1
+12/10/2017 11:32:08 - info: [/museums] GET ::1
+12/10/2017 11:32:08 - info: [/museums] Request statusCode: 200
+12/10/2017 11:32:12 - info: Server starting up
+12/10/2017 11:32:12 - info: Server running at http://localhost:9070/
+12/10/2017 11:32:12 - warn: The data provider is down
+12/10/2017 11:33:52 - info: Server starting up
+12/10/2017 11:33:52 - info: Server running at http://localhost:9070/
+12/10/2017 11:33:52 - warn: The data provider is down
+12/10/2017 11:34:23 - info: Server starting up
+12/10/2017 11:34:23 - info: Server running at http://localhost:9070/
+12/10/2017 11:34:23 - warn: The data provider is down
+12/10/2017 11:34:35 - info: Server starting up
+12/10/2017 11:34:35 - info: Server running at http://localhost:9070/
+12/10/2017 11:34:35 - warn: The data provider is down
+12/10/2017 11:34:40 - info: [/attractionc] GET ::1
+12/10/2017 11:34:40 - info: [/museums] GET ::1
+12/10/2017 11:34:41 - info: [/attractionc] GET ::1
+12/10/2017 11:34:41 - info: [/museums] GET ::1
+12/10/2017 11:35:05 - info: [/attractionc] GET ::1
+12/10/2017 11:35:05 - info: [/museums] GET ::1
+12/10/2017 11:35:29 - info: [/attractionc] GET ::1
+12/10/2017 11:35:29 - info: [/museums] GET ::1
+12/10/2017 11:35:42 - info: [/attractionc] GET ::1
+12/10/2017 11:35:42 - info: [/museums] GET ::1
+12/10/2017 11:43:45 - info: [/attractionc] GET ::1
+12/10/2017 11:43:45 - info: [/museums] GET ::1
+12/10/2017 11:46:13 - info: Server starting up
+12/10/2017 11:46:13 - info: Server running at http://localhost:9070/
+12/10/2017 11:46:13 - warn: The data provider is down
+12/10/2017 11:46:37 - info: Server starting up
+12/10/2017 11:46:37 - info: Server running at http://localhost:9070/
+12/10/2017 11:46:37 - warn: The data provider is down
+12/10/2017 11:46:42 - info: [/attractionc] GET ::1
+12/10/2017 11:46:42 - info: [/museums] GET ::1
+12/10/2017 11:48:37 - info: [/attractionc] GET ::1
+12/10/2017 11:48:37 - info: [/museums] GET ::1
+12/10/2017 11:49:18 - info: [/attractionc] GET ::1
+12/10/2017 11:49:23 - info: [/attractionc] GET ::1
+12/10/2017 11:49:45 - info: [/attractionc] GET ::1
+12/10/2017 11:51:11 - info: [/attractionc] GET ::1
+12/10/2017 11:51:17 - info: [/attractionc] GET ::1
+12/10/2017 11:51:36 - info: [/attractionc] POST ::1
+12/10/2017 11:53:36 - info: [/attractionc] POST ::1
+12/10/2017 12:05:51 - info: Server starting up
+12/10/2017 12:05:51 - info: Server running at http://localhost:9070/
+12/10/2017 12:05:51 - warn: The data provider is down
+12/10/2017 12:06:07 - info: [/attractionc] POST ::1
+12/10/2017 12:06:38 - info: [/attractionc] GET ::1
+12/10/2017 12:08:07 - info: [/attractionc] POST ::1
+12/10/2017 12:08:07 - error:  StatusCodeError: 500 - "Internal Server Error"
+    at new StatusCodeError (/home/thomas/node-middleware/node_modules/request-promise-core/lib/errors.js:32:15)
+    at Request.plumbing.callback (/home/thomas/node-middleware/node_modules/request-promise-core/lib/plumbing.js:104:33)
+    at Request.RP$callback [as _callback] (/home/thomas/node-middleware/node_modules/request-promise-core/lib/plumbing.js:46:31)
+    at Request.self.callback (/home/thomas/node-middleware/node_modules/request/request.js:186:22)
+    at emitTwo (events.js:125:13)
+    at Request.emit (events.js:213:7)
+    at Request.<anonymous> (/home/thomas/node-middleware/node_modules/request/request.js:1163:10)
+    at emitOne (events.js:115:13)
+    at Request.emit (events.js:210:7)
+    at IncomingMessage.<anonymous> (/home/thomas/node-middleware/node_modules/request/request.js:1085:12)
+    at Object.onceWrapper (events.js:314:30)
+    at emitNone (events.js:110:20)
+    at IncomingMessage.emit (events.js:207:7)
+    at endReadableNT (_stream_readable.js:1059:12)
+    at _combinedTickCallback (internal/process/next_tick.js:138:11)
+    at process._tickCallback (internal/process/next_tick.js:180:9)
+12/10/2017 14:26:59 - info: [/attractionc] GET ::1
+12/10/2017 14:28:16 - info: [/attractionc] GET ::1
+12/10/2017 14:29:02 - info: [/attractionc] GET ::1
+12/10/2017 14:29:33 - info: [/museums] GET ::1
+12/10/2017 14:29:33 - info: [/attractionc] GET ::1
+12/10/2017 14:30:18 - info: [/attractionc] GET ::1
+12/10/2017 14:30:18 - info: [/museums] GET ::1
+12/10/2017 14:32:57 - info: [/attractionc] GET ::1
+12/10/2017 14:32:57 - info: [/museums] GET ::1
+12/10/2017 14:33:26 - info: Server starting up
+12/10/2017 14:33:26 - info: Server running at http://localhost:9070/
+12/10/2017 14:33:26 - warn: The data provider is down
+12/10/2017 14:33:33 - info: [/attractionc] GET ::1
+12/10/2017 14:33:33 - info: [/museums] GET ::1
+12/10/2017 14:33:43 - info: [/attractionc] GET ::1
+12/10/2017 14:35:17 - info: [/attractionc] GET ::1
+12/10/2017 14:37:17 - info: [/attractionc] GET ::1
+12/10/2017 14:38:27 - info: [/attractionc] GET ::1
+12/10/2017 14:38:31 - info: [/attractionc] GET ::1
+12/10/2017 14:38:31 - info: [/museums] GET ::1
+12/10/2017 14:42:04 - info: [/attractionc] GET ::1
+12/10/2017 14:42:04 - info: [/museums] GET ::1
+12/10/2017 14:44:27 - info: [/attractionc] GET ::1
+12/10/2017 14:44:27 - info: [/museums] GET ::1
+12/10/2017 15:06:01 - info: [/attractionc] GET ::1
+12/10/2017 15:06:24 - info: [/attractionc] GET ::1
+12/10/2017 15:06:30 - info: [/attractionc] GET ::1
+12/10/2017 15:07:21 - info: [/attractionc] GET ::1
+12/10/2017 15:07:25 - info: [/attractionc] GET ::1
+12/10/2017 15:09:21 - info: [/attractionc] GET ::1
+12/10/2017 15:09:35 - info: [/attractionc] GET ::1
+12/10/2017 15:10:46 - info: [/attractionc] GET ::1
+12/10/2017 15:10:56 - info: [/attractionc] GET ::1
+12/10/2017 15:10:56 - info: [/museums] GET ::1
+12/10/2017 15:10:58 - info: [/attractionc] GET ::1
+12/10/2017 15:12:31 - info: [/attractionc] GET ::1
+12/10/2017 15:12:31 - info: [/museums] GET ::1
+12/10/2017 15:13:02 - info: Server starting up
+12/10/2017 15:13:02 - info: Server running at http://localhost:9070/
+12/10/2017 15:13:02 - warn: The data provider is down
+12/10/2017 15:13:14 - info: [/attractionc] GET ::1
+12/10/2017 15:13:14 - info: [/museums] GET ::1
+12/10/2017 15:14:17 - info: [/attractionc] GET ::1
+12/10/2017 15:14:19 - info: [/attractionc] GET ::1
+12/10/2017 15:14:21 - info: [/attractionc] GET ::1
+12/10/2017 15:14:21 - info: [/museums] GET ::1
+12/10/2017 15:25:25 - info: [/attractionc] GET ::1
+12/10/2017 15:31:28 - info: [/attractionc] GET ::1
+12/10/2017 15:38:58 - info: [/attractionc] GET ::1
+12/10/2017 15:39:26 - info: [/attractionc] GET ::1
+12/10/2017 15:49:26 - info: [/attractionc] GET ::1
+12/10/2017 16:04:03 - info: [/attractionc] GET ::1
+12/10/2017 16:04:13 - info: [/attractionc] GET ::1
+12/10/2017 16:06:08 - info: [/attractionc] GET ::1
+12/10/2017 16:06:22 - info: [/attractionc] GET ::1
+12/10/2017 16:07:29 - info: Server starting up
+12/10/2017 16:07:29 - info: Server running at http://localhost:9070/
+12/10/2017 16:07:29 - warn: The data provider is down
+12/10/2017 16:07:33 - info: [/attractionc] GET ::1
+12/10/2017 16:09:02 - info: [/attractionc] GET ::1
+12/10/2017 16:09:05 - info: [/attractionc] GET ::1
+12/10/2017 16:10:04 - info: [/attractionc] GET ::1
+12/10/2017 16:10:07 - info: [/attractionc] GET ::1
+12/10/2017 16:12:13 - info: [/attractionc] GET ::1
+12/10/2017 16:14:47 - info: [/attractionc] GET ::1
+12/10/2017 16:15:52 - info: Server starting up
+12/10/2017 16:15:52 - info: Server running at http://localhost:9070/
+12/10/2017 16:15:52 - warn: The data provider is down
+12/10/2017 16:16:43 - info: Server starting up
+12/10/2017 16:16:43 - info: Server running at http://localhost:9070/
+12/10/2017 16:16:43 - warn: The data provider is down
+12/10/2017 16:16:49 - info: [/attractionc] GET ::1
+12/10/2017 16:17:42 - info: [/attractionc] GET ::1
+12/10/2017 16:17:49 - info: [/attractionc] GET ::1
+12/10/2017 16:18:14 - info: [/attractionc] GET ::1
+12/10/2017 16:18:14 - info: [/museums] GET ::1
+12/10/2017 16:18:17 - info: [/attractionc] GET ::1
+12/10/2017 16:18:19 - info: [/attractionc] GET ::1
+12/10/2017 16:21:23 - info: [/attractionc] GET ::1
+12/10/2017 16:21:30 - info: [/attractionc] GET ::1
+12/10/2017 16:21:30 - info: [/museums] GET ::1
+12/10/2017 16:21:34 - info: [/attractionc] GET ::1
+12/10/2017 16:22:50 - info: [/attractionc] GET ::1
+12/10/2017 16:22:51 - info: [/attractionc] GET ::1
+12/10/2017 16:22:51 - info: [/museums] GET ::1
+12/10/2017 16:22:52 - info: [/attractionc] GET ::1
+12/10/2017 16:22:55 - info: [/attractionc] GET ::1
+12/10/2017 16:27:50 - info: [/attractionc] GET ::1
+12/10/2017 16:29:17 - info: [/attractionc] GET ::1
+12/10/2017 16:54:56 - info: [/attractionc] GET ::1
+12/10/2017 16:55:12 - info: [/attractionc] GET ::1
+12/10/2017 16:55:33 - info: [/attractionc] GET ::1
+12/10/2017 16:59:45 - info: [/attractionc] GET ::1
+12/10/2017 17:02:06 - info: [/attractionc] GET ::1
+12/10/2017 17:04:14 - info: [/attractionc] GET ::1
+12/10/2017 17:04:47 - info: [/attractionc] GET ::1
+12/10/2017 17:14:47 - info: Server starting up
+12/10/2017 17:14:47 - info: Server running at http://localhost:9070/
+12/10/2017 17:14:47 - warn: The data provider is down
+12/10/2017 17:21:50 - info: Server shutting down
+13/10/2017 18:11:17 - info: Server starting up
+13/10/2017 18:11:17 - info: Server running at http://localhost:9070/
+13/10/2017 18:11:17 - warn: The data provider is down
+13/10/2017 18:49:16 - info: [/museums] GET ::1
+13/10/2017 18:49:39 - info: [/museums] GET ::1
+13/10/2017 18:51:25 - info: [/museums] GET ::1
+13/10/2017 18:57:22 - info: Server starting up
+13/10/2017 18:57:22 - info: Server running at http://localhost:9070/
+13/10/2017 18:57:22 - warn: The data provider is down
+13/10/2017 18:59:28 - info: undefinedrequest statusCode: 404
+13/10/2017 18:59:28 - info: undefinedfailed!
+13/10/2017 19:00:00 - info: Server starting up
+13/10/2017 19:00:00 - info: Server running at http://localhost:9070/
+13/10/2017 19:00:00 - warn: The data provider is down
+13/10/2017 19:01:47 - info: undefinedrequest statusCode: 404
+13/10/2017 19:01:47 - info: undefinedfailed!
+13/10/2017 19:02:57 - info: Server starting up
+13/10/2017 19:02:57 - info: Server running at http://localhost:9070/
+13/10/2017 19:02:57 - warn: The data provider is down
+13/10/2017 19:26:20 - info: Server starting up
+13/10/2017 19:26:20 - info: Server running at http://localhost:9070/
+13/10/2017 19:26:20 - warn: The data provider is down
+13/10/2017 19:45:57 - info: Server starting up
+13/10/2017 19:45:57 - info: Server running at http://localhost:9070/
+13/10/2017 19:45:57 - warn: The data provider is down
+13/10/2017 19:47:08 - info: Server starting up
+13/10/2017 19:47:08 - info: Server running at http://localhost:9070/
+13/10/2017 19:47:08 - warn: The data provider is down
+13/10/2017 19:47:16 - info: [/attractionc] GET ::1
+13/10/2017 19:47:42 - info: [/attractionc] GET ::1
+13/10/2017 19:48:31 - info: [/attractionc] GET ::1
+13/10/2017 20:22:36 - info: Server shutting down
+15/10/2017 14:03:15 - info: Server starting up
+15/10/2017 14:03:15 - info: Server running at http://localhost:9070/
+15/10/2017 14:03:15 - warn: The data provider is down
+15/10/2017 14:03:26 - info: Server shutting down
