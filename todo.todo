@@ -1,0 +1,7 @@
+Tasks:
+    ☐ Calcola distanza tra attrazioni quando si crea l'attrazione dal browser
+    ☐ Sistema l'oggetto da inviare al telefono
+    ☐ Implementa la gestione delle immagini
+    ☐ Ottimizza le chiamate al DB (cerca di escludere dalla SELECT le attrazioni escluse)
+    ☐ Lavora solo sugli id e le coordinate
+    ☐ File di configurazione

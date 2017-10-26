@@ -6,7 +6,7 @@ const cors = require('cors');
 
 import {adminRouter} from './routes/adminRoutes';
 import {androidRouter} from './routes/androidRoutes';
-
+import {loginRouter} from './routes/loginRouter';
 import {Topology} from './museumTopology';
 export class WebApi {
     /**
@@ -41,11 +41,11 @@ export class WebApi {
     }
 
     private configureRoutes(app: express.Express) {
+        app.use("/auth", loginRouter );
         app.use("/admin", adminRouter );
         app.use("/android", androidRouter);
         // mount more routers here
         // e.g. app.use("/organisation", organisationRouter);
-        console.log(path.join('../public'));
         app.use('/', express.static('../public'));
     }
 

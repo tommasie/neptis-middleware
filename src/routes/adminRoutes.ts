@@ -165,11 +165,4 @@ adminRouter.route('/museums/:id')
             });
     });
 
-let adiacenze: Map<number, number[]> = new Map<number, number[]>();
-
-
-function preprocess2() {
-
-}
-
 export {adminRouter};
