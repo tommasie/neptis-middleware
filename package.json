@@ -10,12 +10,9 @@
     "@types/mocha": "^2.2.43",
     "@types/node": "^8.0.45",
     "@types/request-promise": "^4.1.38",
-    "async": "^2.5.0",
     "body-parser": "^1.18.2",
     "cors": "^2.8.4",
-    "cytoscape": "^3.2.4",
     "express": "^4.16.2",
-    "express-session": "^1.15.6",
     "jsonwebtoken": "^8.1.0",
     "line-by-line": "^0.1.5",
     "lodash": "^4.17.4",
@@ -31,24 +28,10 @@
     "winston": "^2.4.0"
   },
   "devDependencies": {
-    "gulp": "^3.9.1",
-    "gulp-bower": "0.0.13",
-    "gulp-clean-css": "^2.3.2",
-    "gulp-concat": "^2.6.1",
-    "gulp-filter": "^5.0.1",
-    "gulp-jshint": "^2.0.4",
-    "gulp-less": "^3.3.2",
-    "gulp-load-plugins": "^1.4.0",
-    "gulp-notify": "^3.0.0",
-    "gulp-rename": "^1.2.2",
-    "gulp-ruby-sass": "^2.1.1",
-    "gulp-uglify": "^2.0.1",
     "jshint": "^2.9.4",
-    "main-bower-files": "^2.13.1",
     "neo4j": "^2.0.0-alpha5",
     "neo4j-driver": "^1.5.0",
-    "nodemon": "^1.12.1",
-    "pump": "^1.0.2"
+    "nodemon": "^1.12.1"
   },
   "scripts": {
     "start": "nodemon main",
