@@ -3,7 +3,8 @@ import * as rp      from 'request-promise';
 import jwt = require('jsonwebtoken');
 import {logger} from '../config/logger';
 import {Topology} from '../museumTopology';
-let serverName = "http://localhost:3200/";
+const config = require('../config/config.json');
+const serverName = config.DBUrl;
 let curator_id = 1;
 const adminRouter = express.Router();
 

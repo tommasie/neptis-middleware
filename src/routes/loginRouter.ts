@@ -1,7 +1,8 @@
 import * as express   from 'express';
 import * as rp        from 'request-promise';
 import jwt = require('jsonwebtoken');
-const serverName = "http://localhost:3200/";
+const config = require('../config/config.json');
+const serverName = config.DBUrl;
 const path = require('path');
 const comuni = require(path.join(__dirname,'../assets/comuni.json'));
 const loginRouter = express.Router();

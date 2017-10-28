@@ -7,7 +7,7 @@ const cors = require('cors');
 import {adminRouter} from './routes/adminRoutes';
 import {androidRouter} from './routes/androidRoutes';
 import {loginRouter} from './routes/loginRouter';
-import {Topology} from './museumTopology';
+
 export class WebApi {
     /**
      * @param app - express application
@@ -25,19 +25,6 @@ export class WebApi {
       app.use(bodyParser.json());
       app.use(morgan("dev"));
       app.use(cors());
-
-      let mus = {
-          'A': ['B','H'],
-          'B': ['C'],
-          'C': ['D','E'],
-          'D': [],
-          'E': ['F','G'],
-          'F': [],
-          'G': [],
-          'H': ['I'],
-          'I': ['J'],
-          'J': []
-      };
     }
 
     private configureRoutes(app: express.Express) {
