@@ -1,12 +1,8 @@
-var cytoscape = require('cytoscape');
-
-
 export class Topology {
     /*let obj = {foo: 'bar'};
     Object.keys(obj).forEach(key => {
         map.set(key, obj[key]);
     });*/
-    private cy;
     private mst;
 
     private adiacenze: Object;
@@ -14,7 +10,6 @@ export class Topology {
     constructor(private object: Object, private inizio: string, private fine: string) {
         this.adiacenze = object;
         this.inverso = {};
-         this.cy = cytoscape();
     }
 
     /*parseGraph() {

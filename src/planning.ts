@@ -176,6 +176,29 @@ export class CityPlanning {
         });
     }
     //Ottieni la distanza dalle coordinate correnti dell'utente
+    // distanceFromCurrent(destination: cityattraction) {
+    //     let reqUrl = "https://maps.googleapis.com/maps/api/distancematrix/json?origins=" + this.lat + "," + this.lng;
+    //     reqUrl += "&destinations=" + destination.lat + "," + destination.lng;
+    //     reqUrl += "&language=it-IT&mode=walking&key=" + config.googleKey;
+    //     rp.post({
+    //         uri: reqUrl,
+    //         json: true
+    //     })
+    //     .then(body => {
+    //         if (body.status === 'OK') {
+    //             var time = body.rows[0].elements[0].duration.value;
+    //             time = +time;
+    //             var minutes = Math.ceil(time / 60);
+    //             var string;
+    //             string = "(:action move-start-" + destination.id + "\n\t\t";
+    //             string += ":precondition (cur_state start)\n\t\t";
+    //             string += ":effect (and (cur_state top_" + destination.id + ") (not(cur_state start)) ";
+    //             string += "(increase (total-cost) " + minutes + "))\n\t)\n\t";
+    //             fs.appendFileSync(this.domainFile,string,'utf8');
+    //         }
+    //     });
+    // }
+
     distanceFromCurrent(destination: cityattraction) {
         let reqUrl = "https://maps.googleapis.com/maps/api/distancematrix/json?origins=" + this.lat + "," + this.lng;
         reqUrl += "&destinations=" + destination.lat + "," + destination.lng;
@@ -299,6 +322,24 @@ export class CityPlanning {
         }).catch(err => {
             res.status(500).send(err);
         });
+    }
+
+    getDistanceFromLatLonInKm(lat1,lon1,lat2,lon2) {
+      var R = 6371; // Radius of the earth in km
+      var dLat = this.deg2rad(lat2-lat1);  // deg2rad below
+      var dLon = this.deg2rad(lon2-lon1);
+      var a =
+        Math.sin(dLat/2) * Math.sin(dLat/2) +
+        Math.cos(this.deg2rad(lat1)) * Math.cos(this.deg2rad(lat2)) *
+        Math.sin(dLon/2) * Math.sin(dLon/2)
+        ;
+      var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+      var d = R * c; // Distance in km
+      return d;
+    }
+
+    deg2rad(deg) {
+      return deg * (Math.PI/180)
     }
 
 }

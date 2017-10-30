@@ -1,39 +1,58 @@
 import * as express   from 'express';
 import * as rp        from 'request-promise';
-import jwt = require('jsonwebtoken');
-const config = require('../config/config.json');
+import {Token} from '../tokenGenerator';
+const comuni = require('../assets/comuni.json');
+const config = require('../../config/config.json');
 const serverName = config.DBUrl;
-const path = require('path');
-const comuni = require(path.join(__dirname,'../assets/comuni.json'));
+
 const loginRouter = express.Router();
 
-/*loginRouter.post('/auth/admin', (req,res) => {
+loginRouter.post('/admin', (req,res) => {
 
-  let email = req.body.badgeid;
-  let password = req.body.password;
+    let email = req.body.email;
+    let password = req.body.password;
 
-  rp({
-    uri: serverName + "curator/auth",
-    method: "POST",
-    body: req.body,
-    json: true,
-    resolveWithFullResponse: true
-  })
+    rp({
+        uri: serverName + "curator/auth",
+        method: "POST",
+        body: req.body,
+        json: true,
+        //resolveWithFullResponse: true
+    })
     .then((response) => {
-      var token = jwt.sign(payload, app.get('superSecret'), {
-      expiresIn: "24h"// expires in 24 hours
-    });
-    res.json({
-      success: true,
-      message: 'Enjoy your token!',
-      token: token
-    });
-      res.sendStatus(200);
+        let token = Token.generateToken(response.id, email);
+        res.status(200).json({
+            id: response.id,
+            email: email,
+            token: token
+        });
     })
     .catch((err) => {
-      res.sendStatus(404);
+        res.sendStatus(404);
     });
-});*/
+});
+
+loginRouter.post('/register/admin', (req,res) => {
+    let city = req.body.city;
+    let region = req.body.region;
+    let email = req.body.email;
+    let password = req.body.password;
+
+    rp.post({
+        uri: serverName + "curator/register",
+        body: req.body,
+        json: true
+    }).then(curator => {
+        let token = Token.generateToken(curator.id,email);
+        res.status(201).json({
+            id: curator.id,
+            email: email,
+            token: token
+        });
+    }).catch(err => {
+        res.sendStatus(500);
+    });
+});
 
 loginRouter.get('/comuni', (req,res) => {
     res.send(comuni);
@@ -51,20 +70,4 @@ loginRouter.get('/organizzazioni', (req,res) => {
 
 });
 
-loginRouter.post('/register/admin', (req,res) => {
-    let org = req.body.org;
-    let city = req.body.city;
-    let email = req.body.email;
-    let password = req.body.password;
-
-    console.log(req.body);
-    /*rp.post({
-        uri: serverName + "curator/register",
-        json: req.body
-    }).then(curator => {
-        res.status(201).send(curator);
-    }).catch(err => {
-        res.sendStatus(500);
-    })*/
-});
 export {loginRouter};

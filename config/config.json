@@ -1,7 +1,7 @@
 {
-    "hostname"   : "localhost",
-    "port" : "9070",
-    "DBUrl"  : "http://localhost:3200/",
-    "serverNode" : "http://localhost:9070/",
-    "googleKey"  : "AIzaSyCvJCBmyIVGAPPJYJqjMobgZ5aQfT6CRmQ"
+    "hostname"      : "localhost",
+    "port"          : "9070",
+    "DBUrl"         : "http://localhost:3200/",
+    "serverNode"    : "http://localhost:9070/",
+    "googleKey"     : "AIzaSyCvJCBmyIVGAPPJYJqjMobgZ5aQfT6CRmQ"
 }

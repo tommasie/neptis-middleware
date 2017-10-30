@@ -34,8 +34,8 @@
     "nodemon": "^1.12.1"
   },
   "scripts": {
-    "start": "nodemon main",
-    "ts": "nodemon dist/index"
+    "start": "node main",
+    "ts": "node dist/index"
   },
   "author": "Thomas Collerton",
   "license": "MIT"

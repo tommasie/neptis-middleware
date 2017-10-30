@@ -3,3 +3,4 @@ Tasks:
     ☐ Implementa la gestione delle immagini
     ☐ Ottimizza le chiamate al DB (cerca di escludere dalla SELECT le attrazioni escluse)
     ☐ Lavora solo sugli id e le coordinate
+    ☐ Autenticazione
