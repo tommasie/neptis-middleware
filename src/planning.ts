@@ -27,8 +27,8 @@ export class CityPlanning {
     ) {
         this.attractions = [];
         this.computeAttractions = [];
-        this.problemFile = "/home/thomas/problems/city/" + this.city + "_problem" + ".pddl";
-        this.domainFile = "/home/thomas/problems/city/" + this.city + "_domain" + ".pddl";
+        this.problemFile = config.problemsFolder + "city/" + this.city + "_problem" + ".pddl";
+        this.domainFile = config.problemsFolder + "city/" + this.city + "_domain" + ".pddl";
     }
 
     requestAttractions(): rp.RequestPromise {
@@ -148,8 +148,8 @@ export class CityPlanning {
 
     //Ottieni le distanze tra le varie attrazioni da Google
     getDistanceBetweenAttractions(loc1: cityattraction, loc2: cityattraction) {
-        let reqUrl = "https://maps.googleapis.com/maps/api/distancematrix/json?origins=" + loc1.lat + "," + loc1.lng;
-        reqUrl += "&destinations=" + loc2.lat + "," + loc2.lng;
+        let reqUrl = "https://maps.googleapis.com/maps/api/distancematrix/json?origins=" + loc1.latitude + "," + loc1.longitude;
+        reqUrl += "&destinations=" + loc2.latitude + "," + loc2.longitude;
         reqUrl += "&language=it-IT&mode=walking&key=" + config.googleKey;
         rp.post({
             uri: reqUrl,
@@ -175,33 +175,10 @@ export class CityPlanning {
             }
         });
     }
-    //Ottieni la distanza dalle coordinate correnti dell'utente
-    // distanceFromCurrent(destination: cityattraction) {
-    //     let reqUrl = "https://maps.googleapis.com/maps/api/distancematrix/json?origins=" + this.lat + "," + this.lng;
-    //     reqUrl += "&destinations=" + destination.lat + "," + destination.lng;
-    //     reqUrl += "&language=it-IT&mode=walking&key=" + config.googleKey;
-    //     rp.post({
-    //         uri: reqUrl,
-    //         json: true
-    //     })
-    //     .then(body => {
-    //         if (body.status === 'OK') {
-    //             var time = body.rows[0].elements[0].duration.value;
-    //             time = +time;
-    //             var minutes = Math.ceil(time / 60);
-    //             var string;
-    //             string = "(:action move-start-" + destination.id + "\n\t\t";
-    //             string += ":precondition (cur_state start)\n\t\t";
-    //             string += ":effect (and (cur_state top_" + destination.id + ") (not(cur_state start)) ";
-    //             string += "(increase (total-cost) " + minutes + "))\n\t)\n\t";
-    //             fs.appendFileSync(this.domainFile,string,'utf8');
-    //         }
-    //     });
-    // }
 
     distanceFromCurrent(destination: cityattraction) {
         let reqUrl = "https://maps.googleapis.com/maps/api/distancematrix/json?origins=" + this.lat + "," + this.lng;
-        reqUrl += "&destinations=" + destination.lat + "," + destination.lng;
+        reqUrl += "&destinations=" + destination.latitude + "," + destination.longitude;
         reqUrl += "&language=it-IT&mode=walking&key=" + config.googleKey;
         rp.post({
             uri: reqUrl,
@@ -209,6 +186,7 @@ export class CityPlanning {
         })
         .then(body => {
             if (body.status === 'OK') {
+                logger.debug(JSON.stringify(body));
                 var time = body.rows[0].elements[0].duration.value;
                 time = +time;
                 var minutes = Math.ceil(time / 60);
@@ -231,11 +209,11 @@ export class CityPlanning {
         });
     }
 
-    computePlan(attractions) {
-        shelljs.cd('/home/thomas/planners/downward');
-        logger.debug("domain file:",this.domainFile);
+    computePlan(attractions, city) {
+        shelljs.cd(config.plannersFolder + 'downward');
+        logger.debug("domain file:", this.domainFile);
         logger.debug("problem file:", this.problemFile);
-        var solutionOutput = "/home/thomas/planners/solution/" + this.city + ".sol";
+        var solutionOutput = config.plannersFolder + "solution/" + this.city + ".sol";
         var ff = " --heuristic \"hff=ff()\" --search \"lazy_greedy([hff], preferred=[hff])\"";
         var astar = " --search \"astar(blind())\"";
         var exec_string = "./fast-downward.py --build release64 ";
@@ -263,7 +241,7 @@ export class CityPlanning {
                     var outputList = [];
                     var outputObject = {
                         type : "city",
-                        name: this.city,
+                        name: city,
                         route : outputList
                     };
 
@@ -316,7 +294,7 @@ export class CityPlanning {
         }).then(() => {
             return this.finalizeDomain();
         }).then(() => {
-            return this.computePlan(this.computeAttractions);
+            return this.computePlan(this.computeAttractions, this.city);
         }).then(result => {
             res.send(result);
         }).catch(err => {
@@ -346,8 +324,8 @@ export class CityPlanning {
 
 interface cityattraction {
     id: number;
-    lat: number;
-    lng: number;
+    latitude: number;
+    longitude: number;
     radius: number;
 }
 
@@ -373,8 +351,8 @@ export class MuseumPlanning {
         this.attractions = [];
         this.computeAttractions = [];
         this.adjacencies = {};
-        this.problemFile = "/home/thomas/problems/museum/" + this.museum + "_problem" + ".pddl";
-        this.domainFile = "/home/thomas/problems/museum/" + this.museum + "_domain" + ".pddl";
+        this.problemFile = config.problemsFolder + "museum/" + this.museum + "_problem" + ".pddl";
+        this.domainFile = config.problemsFolder + "museum/" + this.museum + "_domain" + ".pddl";
     }
 
     requestAttractions(): rp.RequestPromise {
@@ -521,11 +499,11 @@ export class MuseumPlanning {
         });
     }
 
-    computePlan(attractions, attr2room) {
-        shelljs.cd('/home/thomas/planners/downward');
+    computePlan(attractions, attr2room, museum) {
+        shelljs.cd(config.plannersFolder + 'downward');
         logger.debug("domain file:", this.domainFile);
         logger.debug("problem file:", this.problemFile);
-        var solutionOutput = "/home/thomas/planners/solution/" + this.museum + ".sol";
+        var solutionOutput = config.plannersFolder + "solution/" + this.museum + ".sol";
         var ff = " --heuristic \"hff=ff()\" --search \"lazy_greedy([hff], preferred=[hff])\"";
         var astar = " --search \"astar(blind())\"";
         var exec_string = "./fast-downward.py --build release64 ";
@@ -554,7 +532,7 @@ export class MuseumPlanning {
                 lr.on('end', function() {
                     var outputObject = {
                         type : "museum",
-                        name : this.museum,
+                        name : museum,
                         route : outputList,
                         id : this.id
                     };
@@ -610,7 +588,7 @@ export class MuseumPlanning {
         }).then(() => {
             return this.finalizeDomain();
         }).then(() => {
-            return this.computePlan(this.computeAttractions, this.attr2room);
+            return this.computePlan(this.computeAttractions, this.attr2room, this.museum);
         }).then(result => {
             res.send(result);
         }).catch(err => {

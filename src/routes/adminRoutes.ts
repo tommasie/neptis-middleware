@@ -78,7 +78,7 @@ adminRouter.route('/attractionc/:attraction_id')
         body: attraction,
         json: true
     }).then(function(response) {
-        res.sendStatus(200);
+        res.status(200).json();
         return;
     }).catch(function(error){
         res.sendStatus(500);

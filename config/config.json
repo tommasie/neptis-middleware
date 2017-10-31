@@ -3,5 +3,7 @@
     "port"          : "9070",
     "DBUrl"         : "http://localhost:3200/",
     "serverNode"    : "http://localhost:9070/",
-    "googleKey"     : "AIzaSyCvJCBmyIVGAPPJYJqjMobgZ5aQfT6CRmQ"
+    "googleKey"     : "AIzaSyB2lDFlc2MhdgvmBPwMdxB_qjwIn7t7Ays",
+    "problemsFolder": "/home/thomas/problems/",
+    "plannersFolder": "/home/thomas/planners/"
 }

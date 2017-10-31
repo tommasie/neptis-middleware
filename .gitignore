@@ -5,3 +5,5 @@ db/
 logs/
 problems/
 public/
+certificates/
+android-app*
