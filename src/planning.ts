@@ -156,6 +156,7 @@ export class CityPlanning {
             json: true
         })
         .then(body => {
+            logger.debug(body);
             if (body.status === 'OK') {
                 let time = body.rows[0].elements[0].duration.value;
                 time = +time;
@@ -173,7 +174,10 @@ export class CityPlanning {
                 string += "(increase (total-cost) " + minutes + "))\n\t)\n\t";
                 fs.appendFileSync(this.domainFile, string, 'utf8');
             }
-        });
+        }).catch(err => {
+            logger.debug(err);
+        })
+        ;
     }
 
     distanceFromCurrent(destination: cityattraction) {
@@ -186,7 +190,7 @@ export class CityPlanning {
         })
         .then(body => {
             if (body.status === 'OK') {
-                logger.debug(JSON.stringify(body));
+                logger.info(JSON.stringify(body));
                 var time = body.rows[0].elements[0].duration.value;
                 time = +time;
                 var minutes = Math.ceil(time / 60);
@@ -211,8 +215,8 @@ export class CityPlanning {
 
     computePlan(attractions, city) {
         shelljs.cd(config.plannersFolder + 'downward');
-        logger.debug("domain file:", this.domainFile);
-        logger.debug("problem file:", this.problemFile);
+        logger.info("domain file:", this.domainFile);
+        logger.info("problem file:", this.problemFile);
         var solutionOutput = config.plannersFolder + "solution/" + this.city + ".sol";
         var ff = " --heuristic \"hff=ff()\" --search \"lazy_greedy([hff], preferred=[hff])\"";
         var astar = " --search \"astar(blind())\"";
@@ -263,11 +267,11 @@ export class CityPlanning {
                     }
                     // All lines are read, file is closed now.
                     logger.info("End");
-                    logger.debug("ready: " + JSON.stringify(outputObject));
+                    logger.info("ready: " + JSON.stringify(outputObject));
 
                     shelljs.exec('rm ' + solutionOutput, function(status, output) {
-                        if (status) logger.debug("error during delete solution file");
-                        else logger.debug("file solution deleted successfully");
+                        if (status) logger.info("error during delete solution file");
+                        else logger.info("file solution deleted successfully");
                     });
                     resolve(outputObject);
                 });
@@ -288,6 +292,7 @@ export class CityPlanning {
             let urlSensing = serverName + "sensing/city/" + this.computeAttractions[0]['city_id'];
             return rp.get({uri: urlSensing, json:true});
         }).then(sensing => {
+            logger.info(sensing);
             return this.writeVisitActions(sensing);
         }).then(() => {
             return this.writeMoveActions();
@@ -501,15 +506,15 @@ export class MuseumPlanning {
 
     computePlan(attractions, attr2room, museum) {
         shelljs.cd(config.plannersFolder + 'downward');
-        logger.debug("domain file:", this.domainFile);
-        logger.debug("problem file:", this.problemFile);
+        logger.info("domain file:", this.domainFile);
+        logger.info("problem file:", this.problemFile);
         var solutionOutput = config.plannersFolder + "solution/" + this.museum + ".sol";
         var ff = " --heuristic \"hff=ff()\" --search \"lazy_greedy([hff], preferred=[hff])\"";
         var astar = " --search \"astar(blind())\"";
         var exec_string = "./fast-downward.py --build release64 ";
         exec_string += this.domainFile + " " + this.problemFile + astar;
         exec_string += " > " + solutionOutput;
-        logger.debug("exec string:", exec_string);
+        logger.info("exec string:", exec_string);
         //shelljs.exec(exec_string, {silent:true}, function(status, output) {
         return new Promise((resolve, reject) => {
             shelljs.exec(exec_string, function(status, output) {
@@ -554,12 +559,12 @@ export class MuseumPlanning {
                     }
                     // All lines are read, file is closed now.
                     logger.info("End");
-                    logger.debug("ready: " + JSON.stringify(obj));
+                    logger.info("ready: " + JSON.stringify(obj));
 
                     shelljs.exec('rm ' + solutionOutput, function(status, output) {
                         if (status)
-                        logger.debug("error during delete solution file");
-                        else logger.debug("file solution deleted successfully");
+                        logger.info("error during delete solution file");
+                        else logger.info("file solution deleted successfully");
                     });
                     resolve(outputObject);
                 });

@@ -1,34 +1,11 @@
 import * as express                     from 'express';
 import * as rp                          from 'request-promise';
-import jwt = require('jsonwebtoken');
 import {logger}                         from '../config/logger';
 import {CityPlanning, MuseumPlanning}    from '../planning';
 const config = require('../../config/config.json');
 const serverName = config.DBUrl;
-let curator_id = 1;
 
 const androidRouter = express.Router();
-const admin = require("firebase-admin");
-const serviceAccount = require("../../config/android-app-152db-firebase-adminsdk-7qtw8-d7b2d3b4b7.json");
-
-admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount),
-    databaseURL: "https://android-app-152db.firebaseio.com"
-});
-
-androidRouter.use((req,res,next) => {
-    let token = req.get('Authorization');
-    logger.debug(token);
-    admin.auth().verifyIdToken(token)
-    .then(decodedToken => {
-        var uid = decodedToken.uid;
-        next();
-    }).catch(error => {
-        logger.error(error);
-        res.sendStatus(403);
-    });
-
-});
 
 androidRouter.route('/attractionc')
 .get((req,res) => {
@@ -41,7 +18,7 @@ androidRouter.route('/attractionc')
         res.status(200).send(attractions);
     })
     .catch(err => {
-        logger.debug(err);
+        logger.info(err);
         res.sendStatus(500);
     })
 });

@@ -1,29 +1,23 @@
 import * as express from 'express';
 import * as rp      from 'request-promise';
 import {logger} from '../config/logger';
-import {Token} from '../tokenGenerator';
 import {Topology} from '../museumTopology';
 const config = require('../../config/config.json');
 const serverName = config.DBUrl;
 const adminRouter = express.Router();
 
-adminRouter.use((req,res,next) => {
-    //il pacchetto avrà settato l'header Authorization
-    //con valore "Bearer xxx.yyy.zzz"
-    let token = req.get('Authorization');
-    if(token == null || token == "") {
-        return res.sendStatus(403);
-    }
-    token = token.split(" ")[1];
-    Token.verifyToken(token)
-    .then(curator => {
-        req.curator = curator;
-        next();
+adminRouter.post('/register', (req,res) => {
+    rp.post({
+        uri: serverName + "curator/register",
+        body: req.body,
+        json: true
+    }).then(curator => {
+        res.status(201).json({
+            id: curator.id,
+        });
     }).catch(err => {
-        logger.error(err);
-        res.sendStatus(403);
-    })
-
+        res.sendStatus(500);
+    });
 });
 
 adminRouter.route('/attractionc')

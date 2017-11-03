@@ -9,6 +9,8 @@ const bodyParser = require('body-parser');
 const morgan = require('morgan');
 const cors = require('cors');
 
+import {logger} from './config/logger';
+import {apiRouter} from './routes/apiRoutes';
 import {adminRouter} from './routes/adminRoutes';
 import {androidRouter} from './routes/androidRoutes';
 import {loginRouter} from './routes/loginRouter';
@@ -34,19 +36,19 @@ export class WebApi {
 
     private configureRoutes(app: express.Express) {
         app.use("/auth", loginRouter);
-        app.use("/admin", adminRouter);
-        app.use("/android", androidRouter);
-        // mount more routers here
-        // e.g. app.use("/organisation", organisationRouter);
+        app.use("/api", apiRouter);
+        app.use("/api/admin", adminRouter);
+        app.use("/api/android", androidRouter);
         app.use('/', express.static('public'));
     }
 
 
     public run() {
-        https.createServer({
-            key: fs.readFileSync('./certificates/private-key_neptis-poleis.pem'),
-            cert: fs.readFileSync('./certificates/neptis-poleis_certificate.cer')
-        }, this.app).listen(this.port);
-        //http.createServer(this.app).listen(this.port);
+        logger.debug("start");
+        // https.createServer({
+        //     key: fs.readFileSync('./certificates/private-key_neptis-poleis.pem'),
+        //     cert: fs.readFileSync('./certificates/neptis-poleis_certificate.cer')
+        // }, this.app).listen(this.port);
+        http.createServer(this.app).listen(this.port);
     }
 }

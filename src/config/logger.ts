@@ -15,7 +15,7 @@ const logger = new winston.Logger({
             colorize: true }),
     new winston.transports.File(
         {
-            filename: __dirname + '/logs/debug.log',
+            filename: './logs/debug.log',
             maxsize: 5242880, //5MB
             maxFiles: 5,
             timestamp: ts,
@@ -27,7 +27,7 @@ const logger = new winston.Logger({
             timestamp: ts,
             colorize: true }),
     new winston.transports.File({
-            filename: __dirname + '/logs/exception.log',
+            filename: './logs/exception.log',
             timestamp: ts,
             json: false })
   ],
