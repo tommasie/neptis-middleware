@@ -1,58 +1,11 @@
 export class Topology {
-    /*let obj = {foo: 'bar'};
-    Object.keys(obj).forEach(key => {
-        map.set(key, obj[key]);
-    });*/
-    private mst;
 
     private adiacenze: Object;
     private inverso: Object;
-    constructor(private object: Object, private inizio: string, private fine: string) {
+    constructor(private object: Object, private inizio: string) {
         this.adiacenze = object;
         this.inverso = {};
     }
-
-    /*parseGraph() {
-        Object.keys(this.object).forEach(key => {
-            this.cy.add({
-                group: "nodes",
-                data: { id: key }
-            });
-        });
-        Object.keys(this.object).forEach(key => {
-            this.object[key].forEach(dest => {
-                this.cy.add({
-                    group: "edges",
-                    data: {source: key, target: dest}
-                });
-            });
-        });
-        this.mst = this.cy.elements().kruskal();
-    }
-
-    preprocess() {
-        let grey = [];
-        let black = [];
-        this.mst.nodes().leaves().forEach(leaf => {
-            grey.push(leaf);
-        });
-        while(grey.length != 0) {
-            let node = grey.shift();
-            console.log(node.json());
-            // console.log(node.predecessors().jsons());
-            console.log(node.predecessors()[0].source().json());
-            // console.log("\n\n");
-            console.log(node.predecessors()[0].source().successors().length);
-            console.log("\n\n\n");
-        }
-
-    }
-
-    exec() {
-        this.parseGraph();
-        this.preprocess();
-
-    }*/
 
     private recursiveLink2(nodoCorrente, foglia, grey, black) {
         if(nodoCorrente == this.inizio) {
@@ -86,7 +39,7 @@ export class Topology {
         let black = [];
         //Aggiungi alla lista grigia le foglie
         Object.keys(this.adiacenze).forEach(src => {
-            if(this.adiacenze[src].length == 0 || src != this.fine)
+            if(this.adiacenze[src].length == 0)
                 grey.push(src);
         });
         while(grey.length != 0) {

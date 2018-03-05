@@ -14,25 +14,20 @@ admin.initializeApp({
 const apiRouter = express.Router();
 
 apiRouter.use((req,res,next) => {
-    let token = req.get('Authorization');
+    req.email = "collerton.1674085@studenti.uniroma1.it";
+    return next();
+    /*let token = req.get('Authorization');
     if(token == null || token == "") {
         return res.sendStatus(403);
     }
     admin.auth().verifyIdToken(token)
     .then(decodedToken => {
         let email = decodedToken.firebase.identities.email[0];
-        rp.get(serverName + "curator/id/" + email)
-        .then(id => {
-            req.curator = id;
-            next();
-        }).catch(err => {
-            logger.error(err);
-            return res.sendStatus(403);
-        });
+        req.email = email;
+        next();
     }).catch(error => {
         logger.error(error);
-
-    });
+    });*/
 });
 
 export {apiRouter};

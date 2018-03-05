@@ -7,12 +7,33 @@ const serverName = config.DBUrl;
 
 const androidRouter = express.Router();
 
+androidRouter.use((req,res,next) => {
+    //do something
+    next();
+});
+
 androidRouter.route('/attractionc')
 .get((req,res) => {
     let city = req.query.city;
     let region = req.query.region;
     rp.get({
         uri: serverName + "attractionc/city/?city=" + city + "&region=" + region,
+    })
+    .then(attractions => {
+        res.status(200).send(attractions);
+    })
+    .catch(err => {
+        logger.info(err);
+        res.sendStatus(500);
+    })
+});
+
+androidRouter.route('/attractionm/city')
+.get((req,res) => {
+    let city = req.query.city;
+    let region = req.query.region;
+    rp.get({
+        uri: serverName + "attractionm/city/?city=" + city + "&region=" + region,
     })
     .then(attractions => {
         res.status(200).send(attractions);

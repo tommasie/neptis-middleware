@@ -39,16 +39,19 @@ export class WebApi {
         app.use("/api", apiRouter);
         app.use("/api/admin", adminRouter);
         app.use("/api/android", androidRouter);
-        app.use('/', express.static('public'));
+        app.use("/public/img", express.static("img"));
+        app.use("/", express.static("public"));
     }
 
 
     public run() {
-        logger.debug("start");
-        // https.createServer({
-        //     key: fs.readFileSync('./certificates/private-key_neptis-poleis.pem'),
-        //     cert: fs.readFileSync('./certificates/neptis-poleis_certificate.cer')
-        // }, this.app).listen(this.port);
+        //logger.debug("start");
+        //Production server
+        /*https.createServer({
+            key: fs.readFileSync('./certificates/private-key_neptis-poleis.pem'),
+            cert: fs.readFileSync('./certificates/neptis-poleis_certificate.cer')
+        }, this.app).listen(this.port);*/
+        //Dev server
         http.createServer(this.app).listen(this.port);
     }
 }

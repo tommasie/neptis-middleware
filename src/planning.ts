@@ -2,6 +2,7 @@ import * as _ from 'lodash';
 import * as rp from 'request-promise';
 import * as fs from 'fs';
 import {logger}   from './config/logger';
+import {Topology} from './museumTopology';
 const shelljs = require('shelljs');
 var LineByLineReader = require('line-by-line');
 const config = require('../config/config.json');
@@ -16,6 +17,7 @@ export class CityPlanning {
 
     private attractions: cityattraction[];
     private computeAttractions: cityattraction[];
+    private times: {};
     constructor(
         private city: string,
         private region: string,
@@ -213,7 +215,7 @@ export class CityPlanning {
         });
     }
 
-    computePlan(attractions, city) {
+    computePlan(attractions, city, times) {
         shelljs.cd(config.plannersFolder + 'downward');
         logger.info("domain file:", this.domainFile);
         logger.info("problem file:", this.problemFile);
@@ -256,16 +258,23 @@ export class CityPlanning {
                                 attraction = attr;
                             }
                         });
+                        attraction.picture = "https://neptis-poleis.diag.uniroma1.it:9070/public/img/" + attraction.picture;
                         var obj = {
                             name: attraction.name,
                             coordinates: {latitude: attraction.latitude, longitude: attraction.longitude},
                             radius: attraction.radius,
                             rating: attraction.rating,
-                            id: attraction.id
+                            id: attraction.id,
+                            time: times[attraction.id]
                         }
                         outputList.push(obj);
                     }
                     // All lines are read, file is closed now.
+                    let totalTime = 0;
+                    outputList.forEach(item => {
+                        totalTime += item.time;
+                    });
+                    outputObject['total_time'] = totalTime;
                     logger.info("End");
                     logger.info("ready: " + JSON.stringify(outputObject));
 
@@ -292,17 +301,20 @@ export class CityPlanning {
             let urlSensing = serverName + "sensing/city/" + this.computeAttractions[0]['city_id'];
             return rp.get({uri: urlSensing, json:true});
         }).then(sensing => {
-            logger.info(sensing);
-            return this.writeVisitActions(sensing);
+            this.times = sensing.times;
+            logger.debug(this.times);
+            return this.writeVisitActions(sensing.values);
         }).then(() => {
             return this.writeMoveActions();
         }).then(() => {
             return this.finalizeDomain();
         }).then(() => {
-            return this.computePlan(this.computeAttractions, this.city);
+            return this.computePlan(this.computeAttractions, this.city, this.times);
         }).then(result => {
+            logger.debug("result array", JSON.stringify(result));
             res.send(result);
         }).catch(err => {
+            logger.error(err);
             res.status(500).send(err);
         });
     }
@@ -345,6 +357,7 @@ export class MuseumPlanning {
 
     private adjacencies: object;
     private attr2room = {};
+    private times: {};
     constructor(
         private museum: string,
         private id: number,
@@ -367,20 +380,25 @@ export class MuseumPlanning {
         });
     }
 
-    requestAdjacencies() {
+    requestAdjacencies(): rp.RequestPromise {
         return rp.get({
-            uri:serverName + "room/adjacencies?museum=" + this.id,
+            uri:serverName + "room/adjacencies/" + this.id,
             json:true
         });
     }
 
-    filterAttractions(museum) {
+    filterAttractions(museum): Object {
+        console.log(museum);
         this.museumData = museum;
+        museum.rooms.forEach(r => {
+            if(r.starting)
+                this.museumData.start = r.id;
+        })
         museum.rooms.forEach(room => {
             this.rooms.push(room);
             this.computeAttractions = this.computeAttractions.concat(room.attraction_ms.filter(attraction => {
                 if(this.exclude.indexOf(attraction.id) == -1) {
-                    this.attr2room[attraction.id] = room.id;
+                    this.attr2room[attraction.id] = room;
                     return true;
                 }
                 return false;
@@ -444,7 +462,7 @@ export class MuseumPlanning {
                 let id = attraction.id;
                 for (let j = 0; j < this.visits; j++) {
                     action += "(:action visit-v" + j + "-" + id + "\n\t\t";
-                    action += ":precondition (and (cur_state top_" + this.attr2room[id] + ") (cur_state v" + j + ") (not (visited att_" + id + ")))\n\t\t";
+                    action += ":precondition (and (cur_state top_" + this.attr2room[id].id + ") (cur_state v" + j + ") (not (visited att_" + id + ")))\n\t\t";
                     action += ":effect (and (cur_state v" + (j + 1) + ") (not (cur_state v" + j + ")) (visited att_" + id +") (increase (total-cost) " + cost +"))\n\t)\n\t";
                 }
             });
@@ -461,7 +479,7 @@ export class MuseumPlanning {
                 cost = sensingData[id];
                 for (let j = 0; j < this.visits; j++) {
                     action += "(:action visit-v" + j + "-" + id + "\n\t\t";
-                    action += ":precondition (and (cur_state top_" + this.attr2room[id] + ") (cur_state v" + j + ") (not (visited att_" + id + ")))\n\t\t";
+                    action += ":precondition (and (cur_state top_" + this.attr2room[id].id + ") (cur_state v" + j + ") (not (visited att_" + id + ")))\n\t\t";
                     action += ":effect (and (cur_state v" + (j + 1) + ") (not (cur_state v" + j + ")) (visited att_" + id +") (increase (total-cost) " + cost +"))\n\t)\n\t";
                 }
             });
@@ -479,6 +497,8 @@ export class MuseumPlanning {
         let move = "";
         Object.keys(this.museumData.adjacencies).forEach(s => {
             this.museumData.adjacencies[s].forEach(t => {
+                s = "top_" + s;
+                t = "top_" + t;
                 move +=  "(:action move-" + s + "-" + t + "\n\t\t";
                 move += ":precondition (cur_state " + s + ")\n\t\t";
                 move += ":effect (and (cur_state " + t + ") (not(cur_state " + s + ")) ";
@@ -493,8 +513,6 @@ export class MuseumPlanning {
         });
     }
 
-
-
     finalizeDomain() {
         return new Promise((resolve,reject) => {
             fs.appendFile(this.domainFile, "\n)", 'utf8', err => {
@@ -504,7 +522,7 @@ export class MuseumPlanning {
         });
     }
 
-    computePlan(attractions, attr2room, museum) {
+    computePlan(attractions, attr2room, museum, times) {
         shelljs.cd(config.plannersFolder + 'downward');
         logger.info("domain file:", this.domainFile);
         logger.info("problem file:", this.problemFile);
@@ -519,12 +537,12 @@ export class MuseumPlanning {
         return new Promise((resolve, reject) => {
             shelljs.exec(exec_string, function(status, output) {
                 if (status !== 0) {
-                    throw new Error("errore nel planner");
+                    reject("errore nel planner");
                 }
                 let lr = new LineByLineReader(solutionOutput);
                 lr.on('error', function(err) {
                     logger.error(" 'err' contains error object x");
-                    return;
+                    reject(" 'err' contains error object x");
                 });
 
                 let visits = [];
@@ -548,18 +566,26 @@ export class MuseumPlanning {
                                 attraction = attr;
                             }
                         });
+                        attraction.picture = "https://neptis-poleis.diag.uniroma1.it:9070/public/img/" + attraction.picture;
+                        logger.debug(attr2room);
                         var obj = {
                             name: attraction.name,
-                            radius: attraction.radius,
                             rating: attraction.rating,
                             room: attr2room[attraction.id].name,
-                            id: attraction.id
+                            id: attraction.id,
+                            picture: attraction.picture,
+                            time: times[attraction.id]
                         }
                         outputList.push(obj);
                     }
                     // All lines are read, file is closed now.
+                    let totalTime = 0;
+                    outputList.forEach(item => {
+                        totalTime += item.time;
+                    });
+                    outputObject['total_time'] = totalTime;
                     logger.info("End");
-                    logger.info("ready: " + JSON.stringify(obj));
+                    logger.info("ready: " + JSON.stringify(outputObject));
 
                     shelljs.exec('rm ' + solutionOutput, function(status, output) {
                         if (status)
@@ -575,11 +601,13 @@ export class MuseumPlanning {
 
     exec(res): void {
         this.requestAttractions().then(body => {
+            this.museum = body.name;
             return this.filterAttractions(body);
         }).then(() => {
             return this.requestAdjacencies();
         }).then(adjacencies => {
-            this.museumData = adjacencies;
+            this.museumData.adjacencies = adjacencies.adjacencies;
+            logger.debug(this.museumData);
             return this.writeProblemFile();
         }).then(() => {
             return this.writeDomainHeader();
@@ -587,16 +615,19 @@ export class MuseumPlanning {
             let urlSensing = serverName + "sensing/museum/" + this.id;
             return rp.get({uri: urlSensing, json:true});
         }).then(sensing => {
-            return this.writeVisitActions(sensing);
+            this.times = sensing.times;
+            logger.debug(this.times);
+            return this.writeVisitActions(sensing.values);
         }).then(() => {
             return this.writeMoveActions();
         }).then(() => {
             return this.finalizeDomain();
         }).then(() => {
-            return this.computePlan(this.computeAttractions, this.attr2room, this.museum);
+            return this.computePlan(this.computeAttractions, this.attr2room, this.museum, this.times);
         }).then(result => {
             res.send(result);
         }).catch(err => {
+            logger.error(err);
             res.status(500).send(err);
         });
     }
