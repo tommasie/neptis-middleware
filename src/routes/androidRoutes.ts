@@ -2,8 +2,8 @@ import * as express                     from 'express';
 import * as rp                          from 'request-promise';
 import {logger}                         from '../config/logger';
 import {CityPlanning, MuseumPlanning}    from '../planning';
-const config = require('../../config/config.json');
-const serverName = config.DBUrl;
+import * as config from 'config';
+const dbServer = config.get("dbServer");
 
 const androidRouter = express.Router();
 
@@ -17,7 +17,7 @@ androidRouter.route('/attractionc')
     let city = req.query.city;
     let region = req.query.region;
     rp.get({
-        uri: serverName + "attractionc/city/?city=" + city + "&region=" + region,
+        uri: dbServer + "attractionc/city/?city=" + city + "&region=" + region,
     })
     .then(attractions => {
         res.status(200).send(attractions);
@@ -33,7 +33,7 @@ androidRouter.route('/attractionm/city')
     let city = req.query.city;
     let region = req.query.region;
     rp.get({
-        uri: serverName + "attractionm/city/?city=" + city + "&region=" + region,
+        uri: dbServer + "attractionm/city/?city=" + city + "&region=" + region,
     })
     .then(attractions => {
         res.status(200).send(attractions);
@@ -49,7 +49,7 @@ androidRouter.route('/museums')
     let city = req.query.city;
     let region = req.query.region;
     rp.get({
-        uri: serverName + "museums/city/?city=" + city + "&region=" + region,
+        uri: dbServer + "museums/city/?city=" + city + "&region=" + region,
     })
     .then(museums => {
         res.status(200).send(museums);
@@ -64,7 +64,7 @@ androidRouter.route('/museums/attractions/:id')
 .get((req,res) => {
     let id = req.params.id;
     rp.get({
-        uri: serverName + "museums/attractions/" + id
+        uri: dbServer + "museums/attractions/" + id
     })
     .then(attractions => {
         res.status(200).send(attractions);
@@ -102,7 +102,7 @@ androidRouter.route('/compute-plan-museum')
 
 androidRouter.post('/report_queue', (req,res) => {
     rp.post({
-        uri: serverName + "sensing/queue",
+        uri: dbServer + "sensing/queue",
         body: req.body,
         json: true
     }).then(response => {
@@ -115,7 +115,7 @@ androidRouter.post('/report_queue', (req,res) => {
 
 androidRouter.post('/report_visit', (req,res) => {
     rp.post({
-        uri: serverName + "sensing/visit",
+        uri: dbServer + "sensing/visit",
         body: req.body,
         json: true
     }).then(response => {
@@ -127,7 +127,7 @@ androidRouter.post('/report_visit', (req,res) => {
 
 androidRouter.post('/report_rating', (req,res) => {
     rp.post({
-        uri: serverName + "sensing/rating",
+        uri: dbServer + "sensing/rating",
         body: req.body,
         json: true
     }).then(response => {

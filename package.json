@@ -30,13 +30,20 @@
     "winston": "^2.4.0"
   },
   "devDependencies": {
+    "config": "^1.30.0",
+    "gulp": "^3.9.1",
+    "gulp-typedoc": "^2.2.0",
     "jshint": "^2.9.4",
     "neo4j": "^2.0.0-alpha5",
     "neo4j-driver": "^1.5.3",
-    "nodemon": "^1.15.1"
+    "nodemon": "^1.15.1",
+    "tslint": "^5.9.1",
+    "typedoc": "^0.11.0"
   },
   "scripts": {
+    "lint": "./node_modules/tslint/bin/tslint src/**/*.ts",
     "start": "node main",
+    "serve": "tsc && node dist/index",
     "ts": "node dist/index"
   },
   "author": "Thomas Collerton",

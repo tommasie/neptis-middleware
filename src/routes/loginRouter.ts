@@ -1,8 +1,8 @@
 import * as express   from 'express';
 import * as rp        from 'request-promise';
 const comuni = require('../assets/comuni.json');
-const config = require('../../config/config.json');
-const serverName = config.DBUrl;
+import * as config from 'config';
+const dbServer = config.get("dbServer");
 
 const loginRouter = express.Router();
 
@@ -12,7 +12,7 @@ loginRouter.get('/comuni', (req,res) => {
 
 loginRouter.get('/organizzazioni', (req,res) => {
     rp.get({
-        uri: serverName + "organizations",
+        uri: dbServer + "organizations",
         json: true
     }).then(organizations => {
         res.status(200).send(organizations);

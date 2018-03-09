@@ -1,0 +1,7 @@
+{
+    "hostname"  : "localhost",
+    "port"      : "9070",
+    "dbServer"  : "http://localhost:3200/",
+    "serverUrl" : "http://localhost:3200/",
+    "serverNode": "http://localhost:9070/"
+}

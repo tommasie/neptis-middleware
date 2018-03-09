@@ -8,3 +8,6 @@ public/
 certificates/
 img/
 android-app*
+doc/
+config/production.json
+tslint.json

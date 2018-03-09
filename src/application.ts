@@ -8,7 +8,7 @@ import * as admin from "firebase-admin";
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
 const cors = require('cors');
-
+const config = require('config');
 import {logger} from './config/logger';
 import {apiRouter} from './routes/apiRoutes';
 import {adminRouter} from './routes/adminRoutes';
@@ -45,13 +45,17 @@ export class WebApi {
 
 
     public run() {
-        //logger.debug("start");
         //Production server
-        /*https.createServer({
-            key: fs.readFileSync('./certificates/private-key_neptis-poleis.pem'),
-            cert: fs.readFileSync('./certificates/neptis-poleis_certificate.cer')
-        }, this.app).listen(this.port);*/
-        //Dev server
-        http.createServer(this.app).listen(this.port);
+        logger.debug("NODE_ENV: "+  process.env.NODE_ENV);
+        if(process.env.NODE_ENV == "production") {
+            https.createServer({
+                key: fs.readFileSync(config.get("httpsKey")),
+                cert: fs.readFileSync(config.get("httpsCert"))
+            }, this.app).listen(this.port);
+        }
+        else {
+            //Dev server
+            http.createServer(this.app).listen(this.port);
+        }
     }
 }

@@ -1,8 +1,6 @@
 import * as express                     from 'express';
 import * as rp                          from 'request-promise';
 import {logger}                         from '../config/logger';
-const config = require('../../config/config.json');
-const serverName = config.DBUrl;
 const admin = require("firebase-admin");
 const serviceAccount = require("../../config/android-app-152db-firebase-adminsdk-7qtw8-d7b2d3b4b7.json");
 
@@ -14,20 +12,24 @@ admin.initializeApp({
 const apiRouter = express.Router();
 
 apiRouter.use((req,res,next) => {
-    req.email = "collerton.1674085@studenti.uniroma1.it";
-    return next();
-    /*let token = req.get('Authorization');
-    if(token == null || token == "") {
-        return res.sendStatus(403);
+    if(process.env.NODE_ENV == "production") {
+        let token = req.get('Authorization');
+        if(token == null || token == "") {
+            return res.sendStatus(403);
+        }
+        admin.auth().verifyIdToken(token)
+        .then(decodedToken => {
+            let email = decodedToken.firebase.identities.email[0];
+            req.email = email;
+            next();
+        }).catch(error => {
+            logger.error(error);
+        });
     }
-    admin.auth().verifyIdToken(token)
-    .then(decodedToken => {
-        let email = decodedToken.firebase.identities.email[0];
-        req.email = email;
-        next();
-    }).catch(error => {
-        logger.error(error);
-    });*/
+    else {
+        req.email = "collerton.1674085@studenti.uniroma1.it";
+        return next();
+    }
 });
 
 export {apiRouter};

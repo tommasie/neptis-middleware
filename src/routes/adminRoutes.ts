@@ -4,14 +4,14 @@ import * as multer from 'multer'
 import * as fs from 'fs';
 import {logger} from '../config/logger';
 import {Topology} from '../museumTopology';
-const config = require('../../config/config.json');
-const serverName = config.DBUrl;
+import * as config from 'config';
+const dbServer = config.get("dbServer");
 const adminRouter = express.Router();
 
 const upload = multer({dest: "img/"}); //Field name and max count
 
 adminRouter.use((req,res,next) => {
-    rp.get(serverName + "curator/id/" + req.email)
+    rp.get(dbServer + "curator/id/" + req.email)
     .then(id => {
         req.curator = id;
         logger.debug(__dirname);
@@ -25,7 +25,7 @@ adminRouter.use((req,res,next) => {
 
 adminRouter.post('/register', (req,res) => {
     rp.post({
-        uri: serverName + "curator/register",
+        uri: dbServer + "curator/register",
         body: req.body,
         json: true
     }).then(curator => {
@@ -40,7 +40,7 @@ adminRouter.post('/register', (req,res) => {
 adminRouter.route('/attractionc')
 .get((req,res) => {
     rp.get({
-        uri: serverName + "attractionc?curator_id=" + req.curator,
+        uri: dbServer + "attractionc?curator_id=" + req.curator,
     })
     .then((body) => {
         res.status(200).send(body);
@@ -58,7 +58,7 @@ adminRouter.route('/attractionc')
     attraction.picture = req.file.filename;
     logger.debug(attraction);
     rp.post({
-        uri: serverName + "attractionc",
+        uri: dbServer + "attractionc",
         json: attraction
     })
     .then((response) => {
@@ -75,7 +75,7 @@ adminRouter.route('/attractionc/:attraction_id')
 .get((req,res) => {
     let id = req.params.attraction_id;
     rp.get({
-        uri: serverName + "attractionc/" + id,
+        uri: dbServer + "attractionc/" + id,
     }).then(attraction => {
         attraction = JSON.parse(attraction);
         attraction.picture = "http://localhost:9070/api/img/" + attraction.picture;
@@ -93,7 +93,7 @@ adminRouter.route('/attractionc/:attraction_id')
     attraction.curator_id = req.curator;
     logger.debug(attraction);
     rp.put({
-        url: serverName + "attractionc/" + id,
+        url: dbServer + "attractionc/" + id,
         body: attraction,
         json: true
     }).then(function(response) {
@@ -107,7 +107,7 @@ adminRouter.route('/attractionc/:attraction_id')
 .delete((req,res) => {
     let id = req.params.attraction_id;
     rp.delete({
-        uri: serverName + "attractionc/" + id,
+        uri: dbServer + "attractionc/" + id,
     }).then(function(response) {
         return res.status(200).json(response);
     }).catch(function(error){
@@ -118,7 +118,7 @@ adminRouter.route('/attractionc/:attraction_id')
 adminRouter.route('/museums')
 .get((req,res) => {
     rp.get({
-        uri: serverName + "museums?curator_id=" + req.curator
+        uri: dbServer + "museums?curator_id=" + req.curator
     })
     .then((body) => {
         res.status(200).send(body);
@@ -132,14 +132,14 @@ adminRouter.route('/museums')
     museum.curator_id = req.curator;
     logger.debug(museum);
     rp.post({
-        uri: serverName + "museums",
+        uri: dbServer + "museums",
         json: museum,
     })
     .then(museum => {
         //
         let tp = new Topology(req.body.links, req.body.start);
         rp.post({
-            uri: serverName + "room/adjacency/" + museum.id,
+            uri: dbServer + "room/adjacency/" + museum.id,
             json: tp.preprocess2()
         }).then(() => {
             res.sendStatus(200);
@@ -153,10 +153,10 @@ adminRouter.route('/museums')
 adminRouter.route('/museums/:id')
 .get((req,res) => {
     let id = req.params.id;
-    rp.get({uri: serverName + 'museums/' + id})
+    rp.get({uri: dbServer + 'museums/' + id})
     .then(museum => {
         museum = JSON.parse(museum);
-        rp.get(serverName + "room/adjacencies/" + id)
+        rp.get(dbServer + "room/adjacencies/" + id)
         .then(neo4j => {
             neo4j = JSON.parse(neo4j);
             logger.debug(neo4j);
@@ -186,7 +186,7 @@ adminRouter.route('/museums/:id')
     let museum = req.body;
     museum.curator_id = req.curator;
     rp.put({
-        uri: serverName + 'museums/' + id,
+        uri: dbServer + 'museums/' + id,
         json: museum
     })
     .then(response => {
@@ -198,7 +198,7 @@ adminRouter.route('/museums/:id')
 })
 .delete((req,res) => {
     let id = req.params.id;
-    rp.delete({uri: serverName + 'museums/' + id})
+    rp.delete({uri: dbServer + 'museums/' + id})
     .then(museum => {
         res.status(200);
     })
@@ -212,7 +212,7 @@ adminRouter.route('/museum')
     let museum = req.body;
     museum.curator_id = req.curator;
     rp.post({
-        uri: serverName + 'museums/',
+        uri: dbServer + 'museums/',
         json: museum
     })
     .then(response => {
@@ -227,7 +227,7 @@ adminRouter.route('/rooms')
 .post((req,res) => {
     let room = req.body;
     rp.post({
-        uri: serverName + 'room/' + room.museum_id,
+        uri: dbServer + 'room/' + room.museum_id,
         json: room
     })
     .then(response => {
@@ -241,7 +241,7 @@ adminRouter.route('/rooms')
 adminRouter.route('/rooms/:id')
 .put((req,res) => {
     rp.put({
-        uri: serverName + 'room/' + req.body.id,
+        uri: dbServer + 'room/' + req.body.id,
         json: req.body
     })
     .then(response => {
@@ -253,7 +253,7 @@ adminRouter.route('/rooms/:id')
     })
 })
 .delete((req,res) => {
-    rp.delete(serverName + 'room/' + req.body.id)
+    rp.delete(dbServer + 'room/' + req.body.id)
     .then(response => {
         res.status(200).end();
     })
@@ -265,7 +265,7 @@ adminRouter.route('/rooms/:id')
 
 adminRouter.post('/room/adjacency', (req,res) => {
     rp.post({
-        uri: serverName + 'room/adjacency',
+        uri: dbServer + 'room/adjacency',
         json: req.body
     })
     .then(response => {
@@ -285,7 +285,7 @@ adminRouter.route('/attractionm')
     attraction_m.picture = req.file.filename;
     logger.debug(attraction_m);
     rp.post({
-        uri: serverName + 'attractionm/',
+        uri: dbServer + 'attractionm/',
         json: attraction_m
     })
     .then(response => {
@@ -303,7 +303,7 @@ adminRouter.route('/attractionm/:id')
 })
 .delete((req,res) => {
     logger.debug(req.params.id);
-    rp.delete(serverName + 'attractionm/' + req.params.id)
+    rp.delete(dbServer + 'attractionm/' + req.params.id)
     .then(img => {
         logger.debug(img);
         let picture = img.picture;
