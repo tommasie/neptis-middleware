@@ -1,37 +1,42 @@
-var winston = require('winston');
-var moment = require('moment');
+import * as moment from 'moment';
+import * as winston from 'winston';
 
-var ts = function() {
-    return moment().format("DD/MM/YYYY HH:mm:ss");
-}
+const ts = () => {
+    return moment().format('DD/MM/YYYY HH:mm:ss');
+};
 
 const logger = new winston.Logger({
-  transports: [
-    new (winston.transports.Console)(
-        {
-            level: 'debug',
+    exceptionHandlers: [
+        new (winston.transports.Console)(
+            {
+                colorize: true,
+                json: true,
+                timestamp: ts,
+            }),
+        new winston.transports.File({
+            filename: './logs/exception.log',
             json: false,
             timestamp: ts,
-            colorize: true }),
-    new winston.transports.File(
-        {
-            filename: './logs/debug.log',
-            maxsize: 5242880, //5MB
-            maxFiles: 5,
-            timestamp: ts,
-            json: false })
-  ],
-  exceptionHandlers: [
-    new (winston.transports.Console)({
-            json: true,
-            timestamp: ts,
-            colorize: true }),
-    new winston.transports.File({
-            filename: './logs/exception.log',
-            timestamp: ts,
-            json: false })
-  ],
-  exitOnError: false
+        }),
+    ],
+    exitOnError: false,
+    transports: [
+        new (winston.transports.Console)(
+            {
+                colorize: true,
+                json: false,
+                level: 'debug',
+                timestamp: ts,
+            }),
+        new winston.transports.File(
+            {
+                filename: './logs/debug.log',
+                json: false,
+                maxFiles: 5,
+                maxsize: 5242880, // 5MB
+                timestamp: ts,
+            }),
+    ],
 });
 
-export {logger};
+export { logger };
