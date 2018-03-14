@@ -9,5 +9,5 @@ certificates/
 img/
 android-app*
 doc/
-config/production.json
+config/
 tslint.json

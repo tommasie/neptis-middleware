@@ -154,27 +154,8 @@ adminRouter.route('/museums/:id')
         const id = req.params.id;
         rp.get({ uri: dbServer + 'museums/' + id })
             .then((museum) => {
-                museum = JSON.parse(museum);
-                rp.get(dbServer + 'room/adjacencies/' + id)
-                    .then((neo4j) => {
-                        neo4j = JSON.parse(neo4j);
-                        logger.debug(neo4j);
-                        const rooms = museum.rooms.map((r) => { r.adjacent = []; return r; });
-                        const roomIdMap = {};
-                        rooms.forEach((room) => {
-                            roomIdMap[room.id] = room;
-                        });
-                        Object.keys(neo4j.adjacencies).forEach((from) => {
-                            neo4j.adjacencies[from].forEach((to) => {
-                                roomIdMap[from].adjacent.push(roomIdMap[to]);
-                            });
-                        });
-
-                        logger.debug(rooms);
-                        museum.rooms = rooms;
-                        logger.debug(museum);
-                        res.status(200).send(museum);
-                    });
+                logger.debug(museum);
+                res.status(200).send(museum);
             })
             .catch((err) => {
                 res.sendStatus(500);
@@ -199,10 +180,10 @@ adminRouter.route('/museums/:id')
         const id = req.params.id;
         rp.delete({ uri: dbServer + 'museums/' + id })
             .then((museum) => {
-                res.status(200);
+                res.status(200).end();
             })
             .catch((err) => {
-                res.sendStatus(500);
+                res.status(500).end();
             });
     });
 
@@ -275,6 +256,19 @@ adminRouter.post('/room/adjacency', (req, res) => {
         });
 });
 
+adminRouter.delete('/room/adjacency/:from/:to', (req, res) => {
+    rp.delete({
+        json: req.body,
+        uri: dbServer + `room/adjacency/${req.params.from}/${req.params.to}`,
+    })
+        .then((response) => {
+            res.status(201).end();
+        })
+        .catch((err) => {
+            res.status(500).end();
+        });
+});
+
 adminRouter.route('/attractionm')
     .post(upload.single('picture'), (req, res) => {
         logger.debug(req.file);
@@ -304,6 +298,7 @@ adminRouter.route('/attractionm/:id')
         rp.delete(dbServer + 'attractionm/' + req.params.id)
             .then((img) => {
                 logger.debug(img);
+                img = JSON.parse(img);
                 const picture = img.picture;
                 if (picture != null) {
                     fs.unlink('./img/' + picture, (err) => {
