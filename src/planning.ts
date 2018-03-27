@@ -218,7 +218,8 @@ export class CityPlanning {
         shelljs.cd(config.get('plannersFolder') + 'downward');
         logger.info('domain file:', this.domainFile);
         logger.info('problem file:', this.problemFile);
-        const solutionOutput = config.get('plannersFolder') + 'solution/' + this.city + '.sol';
+        const solFileName = this.city.toLowerCase().replace(/\s/g, '_');
+        const solutionOutput = config.get('plannersFolder') + 'solution/' + solFileName + '.sol';
         const ff = ' --heuristic "hff=ff()" --search "lazy_greedy([hff], preferred=[hff])"';
         const astar = ' --search "astar(blind())"';
         let execString = './fast-downward.py --build release64 ';
@@ -263,8 +264,10 @@ export class CityPlanning {
                         attraction.picture = 'https://neptis-poleis.diag.uniroma1.it:9070/public/img/' + attraction.picture;
                         const obj = {
                             coordinates: { latitude: attraction.latitude, longitude: attraction.longitude },
+                            description: attraction.description,
                             id: attraction.id,
                             name: attraction.name,
+                            picture: attraction.picture,
                             radius: attraction.radius,
                             rating: attraction.rating,
                             time: times[attraction.id],
@@ -380,17 +383,11 @@ export class MuseumPlanning {
         });
     }
 
-    public requestAdjacencies(): rp.RequestPromise {
-        return rp.get({
-            json: true,
-            uri: dbServer + 'room/adjacencies/' + this.id,
-        });
-    }
-
     public filterAttractions(museum): object {
         logger.info(museum);
         this.museumData = museum;
         museum.rooms.forEach((r) => {
+            logger.debug(r);
             if (r.starting) {
                 this.museumData.start = r.id;
             }
@@ -496,7 +493,17 @@ export class MuseumPlanning {
     public writeMoveActions() {
         const minutes = 1;
         let move = '';
-        Object.keys(this.museumData.adjacencies).forEach((s) => {
+        this.museumData.rooms.forEach((s) => {
+            s.adjacent.forEach((t) => {
+                s = 'top_' + s.id;
+                t = 'top_' + t.id;
+                move += '(:action move-' + s + '-' + t + '\n\t\t';
+                move += ':precondition (cur_state ' + s + ')\n\t\t';
+                move += ':effect (and (cur_state ' + t + ') (not(cur_state ' + s + ')) ';
+                move += '(increase (total-cost) ' + minutes + '))\n\t)\n\t';
+            });
+        });
+        /*Object.keys(this.museumData.adjacencies).forEach((s) => {
             this.museumData.adjacencies[s].forEach((t) => {
                 s = 'top_' + s;
                 t = 'top_' + t;
@@ -505,7 +512,7 @@ export class MuseumPlanning {
                 move += ':effect (and (cur_state ' + t + ') (not(cur_state ' + s + ')) ';
                 move += '(increase (total-cost) ' + minutes + '))\n\t)\n\t';
             });
-        });
+        });*/
         return new Promise((resolve, reject) => {
             fs.appendFile(this.domainFile, move, 'utf8', (err) => {
                 if (err) reject(err);
@@ -527,7 +534,9 @@ export class MuseumPlanning {
         shelljs.cd(config.get('plannersFolder') + 'downward');
         logger.info('domain file:', this.domainFile);
         logger.info('problem file:', this.problemFile);
-        const solutionOutput = config.get('plannersFolder') + 'solution/' + this.museum + '.sol';
+        const solFileName = this.museum.toLowerCase().replace(/\s/g, '_');
+        logger.info(solFileName);
+        const solutionOutput = config.get('plannersFolder') + 'solution/' + solFileName + '.sol';
         const ff = ' --heuristic "hff=ff()" --search "lazy_greedy([hff], preferred=[hff])"';
         const astar = ' --search "astar(blind())"';
         let execString = './fast-downward.py --build release64 ';
@@ -570,6 +579,7 @@ export class MuseumPlanning {
                         attraction.picture = 'https://neptis-poleis.diag.uniroma1.it:9070/public/img/' + attraction.picture;
                         logger.debug(attr2room);
                         const obj = {
+                            description: attraction.description,
                             id: attraction.id,
                             name: attraction.name,
                             picture: attraction.picture,
@@ -604,9 +614,6 @@ export class MuseumPlanning {
             this.museum = body.name;
             return this.filterAttractions(body);
         }).then(() => {
-            return this.requestAdjacencies();
-        }).then((adjacencies) => {
-            this.museumData.adjacencies = adjacencies.adjacencies;
             logger.debug(this.museumData);
             return this.writeProblemFile();
         }).then(() => {

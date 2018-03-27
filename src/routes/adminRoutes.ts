@@ -8,7 +8,7 @@ import { Topology } from '../museumTopology';
 const dbServer = config.get('dbServer');
 const adminRouter = express.Router();
 
-const upload = multer({ dest: 'img/' }); // Field name and max count
+const upload = multer({ dest: '/root/thomas/node-middleware/img/' }); // Field name and max count
 
 adminRouter.use((req, res, next) => {
     rp.get(dbServer + 'curator/id/' + req.email)
