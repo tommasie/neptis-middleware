@@ -1,12 +1,23 @@
 import * as config from 'config';
 import * as express from 'express';
 import * as fs from 'fs';
+import * as im from 'imagemagick';
 import * as multer from 'multer';
 import * as rp from 'request-promise';
 import { logger } from '../config/logger';
 import { Topology } from '../museumTopology';
 const dbServer = config.get('dbServer');
 const adminRouter = express.Router();
+
+/*const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, '/root/thomas/node-middleware/img/');
+      },
+    filename: (req, file, cb) => {
+        cb(null, file.originalname);
+      },
+});*/
+// const upload = multer({storage});
 
 const upload = multer({ dest: '/root/thomas/node-middleware/img/' }); // Field name and max count
 
@@ -55,6 +66,15 @@ adminRouter.route('/attractionc')
         const attraction = req.body;
         attraction.curator_id = req.curator;
         attraction.picture = req.file.filename;
+        im.resize({
+            dstPath: `/root/thomas/node-middleware/img/${req.file.filename}_thumb`,
+            height: 64,
+            srcPath: `/root/thomas/node-middleware/img/${req.file.filename}`,
+            width: 64,
+        }, (err, stdout, stderr) => {
+            if (err) throw err;
+            logger.debug('saved converted file');
+        });
         logger.debug(attraction);
         rp.post({
             json: attraction,
@@ -121,28 +141,6 @@ adminRouter.route('/museums')
         })
             .then((body) => {
                 res.status(200).send(body);
-            })
-            .catch((err) => {
-                res.sendStatus(500);
-            });
-    })
-    .post((req, res) => {
-        const museum = req.body;
-        museum.curator_id = req.curator;
-        logger.debug(museum);
-        rp.post({
-            json: museum,
-            uri: dbServer + 'museums',
-        })
-            .then((museumResponse) => {
-                //
-                const tp = new Topology(req.body.links, req.body.start);
-                rp.post({
-                    json: tp.preprocess2(),
-                    uri: dbServer + 'room/adjacency/' + museumResponse.id,
-                }).then(() => {
-                    res.sendStatus(200);
-                });
             })
             .catch((err) => {
                 res.sendStatus(500);
@@ -275,6 +273,15 @@ adminRouter.route('/attractionm')
         logger.debug(req.body);
         const attractionM = req.body;
         attractionM.picture = req.file.filename;
+        im.resize({
+            dstPath: `/root/thomas/node-middleware/img/${req.file.filename}_thumb`,
+            height: 64,
+            srcPath: `/root/thomas/node-middleware/img/${req.file.filename}`,
+            width: 64,
+        }, (err, stdout, stderr) => {
+            if (err) throw err;
+            logger.debug('saved converted file');
+        });
         logger.debug(attractionM);
         rp.post({
             json: attractionM,
@@ -302,8 +309,11 @@ adminRouter.route('/attractionm/:id')
                 const picture = img.picture;
                 if (picture != null) {
                     fs.unlink('./img/' + picture, (err) => {
-                        if (err) res.status(500).end();
-                        else res.status(200).end();
+                        if (err)  return res.status(500).end();
+                        fs.unlink('./img/' + picture + '_thumb', (err2) => {
+                            if (err2) res.status(500).end();
+                            else res.status(200).end();
+                        });
                     });
                 }
             })

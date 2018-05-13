@@ -91,7 +91,7 @@ androidRouter.route('/compute-plan-city')
 androidRouter.route('/compute-plan-museum')
 .post((req, res) => {
     const cp = new MuseumPlanning(
-        req.body.museum,
+        req.body.name,
         req.body.id,
         req.body.visits,
         req.body.must,

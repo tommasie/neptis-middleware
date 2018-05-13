@@ -2,58 +2,59 @@ import { logger } from './config/logger';
 
 export class Topology {
 
-    private adiacenze: object;
-    private inverso: object;
-    constructor(private object: object, private inizio: string) {
+    private adiacenze: Map<number, number[]>;
+    private inverso: Map<number, number>;
+    private shortcut: Map<number, number>;
+    constructor(object: Map<number, number[]>, private inizio: number) {
         this.adiacenze = object;
-        this.inverso = {};
+        this.inverso = new Map<number, number>();
+        this.shortcut = new Map<number, number>();
     }
 
-    public preprocess2() {
+    public preprocess() {
         // crea lista di arch inversi
-        Object.keys(this.adiacenze).forEach((src) => {
-            const lista = this.adiacenze[src];
-            lista.forEach((target) => {
-                this.inverso[target] = src;
+        this.adiacenze.forEach((targets, src) => {
+            targets.forEach((target: number) => {
+                this.inverso.set(target, src);
             });
         });
         logger.debug(this.adiacenze);
-        logger.debug(this.inverso);
 
-        const grey = [];
-        const black = [];
+        const grey: number[] = [];
+        const black: number[] = [];
         // Aggiungi alla lista grigia le foglie
-        Object.keys(this.adiacenze).forEach((src) => {
-            if (this.adiacenze[src].length === 0) {
+        this.adiacenze.forEach((targets, src) => {
+            if (targets.length === 0) {
                 grey.push(src);
             }
         });
         while (grey.length !== 0) {
             const nodo = grey.shift();
-            const prev = this.inverso[nodo];
+            const prev = this.inverso.get(nodo);
 
-            this.recursiveLink2(prev, nodo, grey, black);
+            this.recursiveLink(prev, nodo, grey, black);
             black.push(nodo);
         }
-        return this.adiacenze;
+        logger.debug(this.shortcut);
+        return this.shortcut;
     }
 
-    private recursiveLink2(nodoCorrente, foglia, grey, black) {
+    private recursiveLink(nodoCorrente: number, foglia: number, grey: number[], black: number[]) {
         if (nodoCorrente === this.inizio) {
-            this.adiacenze[foglia].push(nodoCorrente);
+            this.shortcut.set(foglia, nodoCorrente);
             return;
         }
 
         // se il nodo ha piu di un figlio, allora e' un bivio
-        if (this.adiacenze[nodoCorrente].length > 1) {
-            this.adiacenze[foglia].push(nodoCorrente);
-            if (!grey.includes(nodoCorrente) && !black.includes(nodoCorrente)) {
+        if (this.adiacenze.get(nodoCorrente).length > 1) {
+            this.shortcut.set(foglia, nodoCorrente);
+            if (!grey.some((n) => n === nodoCorrente) && !black.some((n) => n === nodoCorrente)) {
                 grey.push(nodoCorrente);
             }
             return;
         }
-        const parent = this.inverso[nodoCorrente];
-        this.recursiveLink2(parent, foglia, grey, black);
+        const parent = this.inverso.get(nodoCorrente);
+        this.recursiveLink(parent, foglia, grey, black);
     }
 
 }

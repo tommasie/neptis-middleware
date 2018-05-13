@@ -48,6 +48,9 @@ export class CityPlanning {
             // Se l'attrazione non è in exclude, l'indice sarà -1
             return this.exclude.indexOf(attraction.id) === -1;
         });
+        if (this.visits > this.computeAttractions.length) {
+            this.visits = this.computeAttractions.length;
+        }
     }
 
     public writeProblemFile() {
@@ -98,7 +101,6 @@ export class CityPlanning {
     public writeVisitActions(sensing) {
         let action = '';
         let cost = 0;
-        logger.debug(sensing);
         if (sensing.length === 0) {
             cost = 10;
             this.computeAttractions.forEach((attraction) => {
@@ -176,7 +178,7 @@ export class CityPlanning {
                     fs.appendFileSync(this.domainFile, str, 'utf8');
                 }
             }).catch((err) => {
-                logger.debug(err);
+                logger.error(err);
             })
             ;
     }
@@ -263,6 +265,7 @@ export class CityPlanning {
                         logger.debug(attraction);
                         attraction.picture = 'https://neptis-poleis.diag.uniroma1.it:9070/public/img/' + attraction.picture;
                         const obj = {
+                            category: attraction.category,
                             coordinates: { latitude: attraction.latitude, longitude: attraction.longitude },
                             description: attraction.description,
                             id: attraction.id,
@@ -350,6 +353,7 @@ interface ICityAttraction {
 }
 
 export class MuseumPlanning {
+    private museumFileName: string;
     private problemFile: string;
     private domainFile: string;
 
@@ -372,8 +376,10 @@ export class MuseumPlanning {
         this.attractions = [];
         this.computeAttractions = [];
         this.adjacencies = {};
-        this.problemFile = config.get('problemsFolder') + 'museum/' + this.museum + '_problem' + '.pddl';
-        this.domainFile = config.get('problemsFolder') + 'museum/' + this.museum + '_domain' + '.pddl';
+
+        this.museumFileName = this.museum.toLowerCase().replace(/\s/g, '_');
+        this.problemFile = config.get('problemsFolder') + 'museum/' + this.museumFileName + '_problem' + '.pddl';
+        this.domainFile = config.get('problemsFolder') + 'museum/' + this.museumFileName + '_domain' + '.pddl';
     }
 
     public requestAttractions(): rp.RequestPromise {
@@ -443,7 +449,7 @@ export class MuseumPlanning {
 
     public writeDomainHeader() {
         const domainHeader = '(define (domain Museum)\n\t(:requirements :typing :equality)\n\t(:types topology_state visit_state - state attraction)\n\t' +
-            '(:predicates\n\t\t(cur_state ?s - state)\n\t\t(visited ?a - attraction)\n\t)\n\t(:functions\n\t\t(total-cost)\n\t)\n\t';
+            '(:predicates\n\t\t(cur_state ?s - state)\n\t\t(visited ?a - attraction)\n\t\t(room_visited ?a - state)\n\t)\n\t(:functions\n\t\t(total-cost)\n\t)\n\t';
         return new Promise((resolve, reject) => {
             fs.writeFile(this.domainFile, domainHeader, 'utf8', (err) => {
                 if (err) reject(err);
@@ -453,6 +459,7 @@ export class MuseumPlanning {
     }
 
     public writeVisitActions(sensingData) {
+        logger.debug(sensingData);
         let action = '';
         let cost = 0;
         if (sensingData.length === 0) {
@@ -475,10 +482,15 @@ export class MuseumPlanning {
         } else {
             Object.keys(sensingData).forEach((id) => {
                 cost = sensingData[id];
+                if (cost == null) {
+                    cost = 20;
+                }
                 for (let j = 0; j < this.visits; j++) {
-                    action += '(:action visit-v' + j + '-' + id + '\n\t\t';
-                    action += ':precondition (and (cur_state top_' + this.attr2room[id].id + ') (cur_state v' + j + ') (not (visited att_' + id + ')))\n\t\t';
-                    action += ':effect (and (cur_state v' + (j + 1) + ') (not (cur_state v' + j + ')) (visited att_' + id + ') (increase (total-cost) ' + cost + '))\n\t)\n\t';
+                    if (this.attr2room[id] !== undefined) {
+                        action += '(:action visit-v' + j + '-' + id + '\n\t\t';
+                        action += ':precondition (and (cur_state top_' + this.attr2room[id].id + ') (cur_state v' + j + ') (not (visited att_' + id + ')))\n\t\t';
+                        action += ':effect (and (cur_state v' + (j + 1) + ') (not (cur_state v' + j + ')) (visited att_' + id + ') (increase (total-cost) ' + cost + '))\n\t)\n\t';
+                    }
                 }
             });
             return new Promise((resolve, reject) => {
@@ -491,28 +503,42 @@ export class MuseumPlanning {
     }
 
     public writeMoveActions() {
+
+        const adiacenze = new Map<number, number[]>();
+        let start: number;
+        this.museumData.rooms.forEach((s) => {
+            const list = [];
+            s.adjacent.forEach((t) => {
+                list.push(+t.id);
+            });
+            adiacenze.set(+s.id, list);
+            if (s.starting === true) {
+                start = +s.id;
+            }
+        });
+        const T = new Topology(adiacenze, start);
+        const shortcut = T.preprocess();
+        logger.debug(shortcut);
         const minutes = 1;
         let move = '';
-        this.museumData.rooms.forEach((s) => {
-            s.adjacent.forEach((t) => {
-                s = 'top_' + s.id;
-                t = 'top_' + t.id;
-                move += '(:action move-' + s + '-' + t + '\n\t\t';
-                move += ':precondition (cur_state ' + s + ')\n\t\t';
-                move += ':effect (and (cur_state ' + t + ') (not(cur_state ' + s + ')) ';
-                move += '(increase (total-cost) ' + minutes + '))\n\t)\n\t';
+        adiacenze.forEach((targets, s) => {
+            targets.forEach((t: number) => {
+                const source = 'top_' + s;
+                const end = 'top_' + t;
+                move += `(:action move-${source}-${end}\n\t\t`;
+                move += `:precondition (and (cur_state ${source}) (not (room_visited ${end})))\n\t\t`;
+                move += `:effect (and (cur_state ${end}) (not(cur_state ${source})) (room_visited ${source}) `;
+                move += `(increase (total-cost) ${minutes}))\n\t)\n\t`;
             });
         });
-        /*Object.keys(this.museumData.adjacencies).forEach((s) => {
-            this.museumData.adjacencies[s].forEach((t) => {
-                s = 'top_' + s;
-                t = 'top_' + t;
-                move += '(:action move-' + s + '-' + t + '\n\t\t';
-                move += ':precondition (cur_state ' + s + ')\n\t\t';
-                move += ':effect (and (cur_state ' + t + ') (not(cur_state ' + s + ')) ';
-                move += '(increase (total-cost) ' + minutes + '))\n\t)\n\t';
-            });
-        });*/
+        shortcut.forEach((t, s) => {
+            const source = 'top_' + s;
+            const end = 'top_' + t;
+            move += `(:action move-${source}-${end}\n\t\t`;
+            move += `:precondition (cur_state ${source}) \n\t`;
+            move += `:effect (and (cur_state ${end}) (not(cur_state ${source})) (room_visited ${source})`;
+            move += `(increase (total-cost) ${minutes}))\n\t)\n\n\t`;
+        });
         return new Promise((resolve, reject) => {
             fs.appendFile(this.domainFile, move, 'utf8', (err) => {
                 if (err) reject(err);
@@ -540,7 +566,7 @@ export class MuseumPlanning {
         const ff = ' --heuristic "hff=ff()" --search "lazy_greedy([hff], preferred=[hff])"';
         const astar = ' --search "astar(blind())"';
         let execString = './fast-downward.py --build release64 ';
-        execString += this.domainFile + ' ' + this.problemFile + astar;
+        execString += this.domainFile + ' ' + this.problemFile + ff;
         execString += ' > ' + solutionOutput;
         logger.info('exec string:', execString);
         // shelljs.exec(exec_string, {silent:true}, function(status, output) {
@@ -577,8 +603,8 @@ export class MuseumPlanning {
                             }
                         });
                         attraction.picture = 'https://neptis-poleis.diag.uniroma1.it:9070/public/img/' + attraction.picture;
-                        logger.debug(attr2room);
                         const obj = {
+                            category: attraction.category,
                             description: attraction.description,
                             id: attraction.id,
                             name: attraction.name,
@@ -614,7 +640,6 @@ export class MuseumPlanning {
             this.museum = body.name;
             return this.filterAttractions(body);
         }).then(() => {
-            logger.debug(this.museumData);
             return this.writeProblemFile();
         }).then(() => {
             return this.writeDomainHeader();
@@ -623,7 +648,6 @@ export class MuseumPlanning {
             return rp.get({ uri: urlSensing, json: true });
         }).then((sensing) => {
             this.times = sensing.times;
-            logger.debug(this.times);
             return this.writeVisitActions(sensing.values);
         }).then(() => {
             return this.writeMoveActions();
